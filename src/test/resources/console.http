@@ -1,0 +1,7 @@
+POST http://localhost:8080/console/execute/result
+Content-Type: text/groovy
+Accept: text/plain
+X-Console-Verify: 3c365c5f-d690-4f47-8a14-0e1dfd2b2c62
+
+// language=groovy
+ctx

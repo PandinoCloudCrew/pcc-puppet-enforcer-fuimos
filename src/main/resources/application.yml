@@ -1,0 +1,48 @@
+fuimos:
+  services:
+    interaction: http://localhost:${micronaut.server.port}/fuimos/interaction
+    message: http://localhost:${micronaut.server.port}/fuimos/message
+micronaut:
+  application:
+    name: pcc-puppet-enforcer-realm
+  server:
+    port: 9900
+  metrics:
+    enabled: true
+    export:
+      prometheus:
+        enabled: true
+        descriptions: true
+        step: PT1M
+  security:
+    authentication: idtoken
+    intercept-url-map:
+      - access: isAnonymous()
+        pattern: /swagger/**
+      - access: isAnonymous()
+        pattern: /swagger-ui/**
+  router:
+    static-resources:
+      swagger:
+        paths: classpath:META-INF/swagger
+        mapping: /swagger/**
+      swagger-ui:
+        paths: classpath:META-INF/swagger/views/swagger-ui
+        mapping: /swagger-ui/**
+otel:
+  service:
+    name: ${micronaut.application.name}
+  traces:
+    exporter: otlp,jaeger,logging
+    propagator: tracecontext, baggage
+  exclusions:
+    - /health
+netty:
+  default:
+    allocator:
+      max-order: 3
+mongodb:
+  uri: mongodb://pcc:123456789@localhost:27017/fuimos
+worker:
+  queue-type: local
+  enabled: true

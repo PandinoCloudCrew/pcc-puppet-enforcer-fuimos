@@ -1,0 +1,161 @@
+plugins {
+    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("com.diffplug.spotless") version "6.9.1"
+    id("io.micronaut.application") version "3.5.1"
+    id("com.google.cloud.tools.jib") version "2.8.0"
+    id("org.asciidoctor.jvm.convert") version "3.3.2"
+//    id("io.micronaut.test-resources") version "3.5.1"
+    id("com.palantir.git-version") version "0.15.0"
+    id("org.sonarqube") version "3.0"
+    id("jacoco")
+}
+
+version = gitVersion()
+group = "pcc.puppet.enforcer"
+
+apply from: "gradle/asciidoc.gradle"
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    annotationProcessor("org.projectlombok:lombok")
+    annotationProcessor("io.micronaut:micronaut-http-validation")
+    annotationProcessor("io.micronaut.micrometer:micronaut-micrometer-annotation")
+    annotationProcessor("io.micronaut.openapi:micronaut-openapi")
+    annotationProcessor("io.micronaut.security:micronaut-security-annotations")
+    annotationProcessor("io.micronaut.serde:micronaut-serde-processor")
+    annotationProcessor("io.micronaut.tracing:micronaut-tracing-opentelemetry-annotation")
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.5.2.Final")
+    annotationProcessor("io.micronaut.data:micronaut-data-document-processor")
+    implementation("com.agorapulse:micronaut-permissions:1.0.2-micronaut-3.0")
+    implementation("com.agorapulse:micronaut-worker:1.2.1-micronaut-3.0")
+    implementation("io.micronaut:micronaut-http-client")
+    implementation("io.micronaut:micronaut-management")
+    implementation("net.datafaker:datafaker:1.5.0")
+    implementation("io.micronaut.beanvalidation:micronaut-hibernate-validator")
+    implementation("io.micronaut.cache:micronaut-cache-caffeine")
+    implementation("io.micronaut.liquibase:micronaut-liquibase")
+    implementation("io.micronaut.micrometer:micronaut-micrometer-core")
+    implementation("io.micronaut.micrometer:micronaut-micrometer-registry-prometheus")
+    implementation("io.micronaut.problem:micronaut-problem-json")
+    implementation("io.micronaut.reactor:micronaut-reactor")
+    implementation("io.micronaut.reactor:micronaut-reactor-http-client")
+    implementation("io.micronaut.security:micronaut-security")
+    implementation("io.micronaut.security:micronaut-security-jwt")
+    implementation("io.micronaut.security:micronaut-security-oauth2")
+    implementation("io.micronaut.serde:micronaut-serde-bson")
+    implementation("io.micronaut.data:micronaut-data-mongodb")
+    implementation("io.micronaut.mongodb:micronaut-mongo-reactive")
+    implementation("jakarta.annotation:jakarta.annotation-api")
+    implementation("io.micronaut.tracing:micronaut-tracing-opentelemetry-http")
+    implementation("io.opentelemetry:opentelemetry-exporter-jaeger")
+    implementation("io.opentelemetry:opentelemetry-exporter-logging")
+    implementation("io.opentelemetry:opentelemetry-exporter-otlp")
+    implementation platform("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom-alpha:1.14.0-alpha")
+    implementation("io.swagger.core.v3:swagger-annotations")
+    implementation("org.mapstruct:mapstruct:1.5.2.Final")
+    runtimeOnly("ch.qos.logback:logback-classic")
+    runtimeOnly("org.mongodb:mongodb-driver-reactivestreams")
+    testImplementation("org.awaitility:awaitility:4.2.0")
+    compileOnly("org.projectlombok:lombok")
+    compileOnly("org.graalvm.nativeimage:svm")
+
+    implementation("io.micronaut:micronaut-validation")
+
+    testImplementation("org.mockito:mockito-core")
+
+}
+
+
+application {
+    mainClass.set("pcc.puppet.enforcer.Application")
+}
+java {
+    sourceCompatibility = JavaVersion.toVersion("17")
+    targetCompatibility = JavaVersion.toVersion("17")
+}
+
+tasks {
+    dockerBuild {
+        images = ["${System.env.DOCKER_IMAGE ?: project.name}:$project.version"]
+    }
+
+    dockerBuildNative {
+        images = ["${System.env.DOCKER_IMAGE ?: project.name}:$project.version"]
+    }
+    jib {
+        to {
+            image = "${System.env.DOCKER_IMAGE ?: 'gcr.io/myapp/jib-image'}:$project.version"
+        }
+    }
+}
+graalvmNative.toolchainDetection = false
+micronaut {
+    runtime("netty")
+    testRuntime("junit5")
+    processing {
+        incremental(true)
+        annotations("pcc.puppet.enforcer.*")
+    }
+}
+
+
+configurations.all {
+    resolutionStrategy.dependencySubstitution {
+        substitute(module("io.micronaut:micronaut-jackson-core"))
+                .using(module("io.micronaut.serde:micronaut-serde-bson:1.3.0"))
+        substitute(module("io.micronaut:micronaut-jackson-databind"))
+                .using(module("io.micronaut.serde:micronaut-serde-bson:1.3.0"))
+    }
+}
+
+spotless {
+    java {
+        importOrder()
+        removeUnusedImports()
+        googleJavaFormat() // has its own section below
+        licenseHeader "/*\n" +
+                " * Copyright 2022 Pandino Cloud Crew (C)\n" +
+                " *\n" +
+                " * Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
+                " * you may not use this file except in compliance with the License.\n" +
+                " * You may obtain a copy of the License at\n" +
+                " *\n" +
+                " * https://www.apache.org/licenses/LICENSE-2.0\n" +
+                " *\n" +
+                " * Unless required by applicable law or agreed to in writing, software\n" +
+                " * distributed under the License is distributed on an \"AS IS\" BASIS,\n" +
+                " * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" +
+                " * See the License for the specific language governing permissions and\n" +
+                " * limitations under the License.\n" +
+                " */" // or licenseHeaderFile
+    }
+}
+
+sonarqube {
+    properties {
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.language", "java"
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.exclusions", ["**/*Application.java"]
+        property "sonar.organization", "pandino-cloud-crew"
+        property "sonar.projectName", "PandinoCloudCrew_$rootProject.name"
+        property "sonar.projectKey", "$rootProject.name"
+        property "sonar.java.binaries", "${buildDir}/classes"
+        property "sonar.sourceEncoding", "UTF-8"
+    }
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it,
+                    exclude: ["Application.java"])
+        }))
+    }
+}
