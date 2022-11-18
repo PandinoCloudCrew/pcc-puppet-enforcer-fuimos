@@ -1,0 +1,25 @@
+name: Deploy Version From TAG
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Tailscale
+        uses: tailscale/github-action@v1
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+          version: 1.32.0
+      - uses: actions/checkout@master
+      - name: Set Kubernetes Context
+        uses: azure/k8s-set-context@v3
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}
+      - name: deploy to cluster
+        run: |
+          kubectl set image deployment/pcc-puppet-enforcer-fuimos-deployment pcc-puppet-enforcer-fuimos-container=${{ secrets.DOCKER_REGISTRY_URL }}/${{ secrets.DOCKER_REPOSITORY_PATH }}/pcc-puppet-enforcer-fuimos:${{ github.ref_name }}
+      - name: verify deployment
+        run: |
+          kubectl rollout status deployment/pcc-puppet-enforcer-fuimos-deployment

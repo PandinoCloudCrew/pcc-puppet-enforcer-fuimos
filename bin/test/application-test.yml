@@ -1,0 +1,58 @@
+micronaut:
+  application:
+    name: test-pcc-puppet-enforcer-fuimos
+  server:
+    port: ${random.port}
+    netty:
+      access-logger:
+        enabled: true
+        loggerName: HTTP_ACCESS_LOGGER
+        log-format: "%h %r %s %b"
+  metrics:
+    enabled: false
+    export:
+      prometheus:
+        enabled: false
+  otel:
+    enabled: false
+  security:
+    enabled: false
+  http:
+    services:
+      pcc-realm-organization:
+        url: http://localhost:${micronaut.server.port}
+        path: /realm/organization
+
+flyway:
+  enabled: true
+  datasources:
+    default:
+      enabled: true
+      url: 'jdbc:h2:mem:test-realm;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;'
+      username: sa
+      password: ''
+      locations:
+        - classpath:migration
+
+datasources:
+  default:
+    pooled: true
+    jmxExport: true
+    dbCreate: none
+    url: 'jdbc:h2:mem:test-realm;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;'
+    driverClassName: org.h2.Driver
+    dialect: H2
+    username: sa
+    password: ''
+
+r2dbc:
+  datasources:
+    default:
+      url: 'r2dbc:h2:mem:///test-realm;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;'
+      driverClassName: org.h2.Driver
+      username: sa
+      password: ''
+      dialect: h2
+      options:
+        driver: pool
+        protocol: h2:mem

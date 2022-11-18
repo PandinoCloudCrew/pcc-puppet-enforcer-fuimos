@@ -1,0 +1,17 @@
+micronaut:
+  application:
+    default-charset: UTF-8
+    name: test-pcc-puppet-enforcer-fuimos
+  config-client:
+    enabled: false
+  otel:
+    enabled: false
+
+tracing:
+  jaeger:
+    enabled: false
+
+vault:
+  client:
+    config:
+      enabled: false

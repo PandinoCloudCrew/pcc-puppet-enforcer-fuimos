@@ -1,0 +1,6 @@
+applicationType: default
+defaultPackage: pcc.puppet.enforcer
+testFramework: junit
+sourceLanguage: java
+buildTool: gradle
+features: [agorapulse-gru-http, agorapulse-micronaut-console, agorapulse-micronaut-permissions, agorapulse-micronaut-worker, amazon-cognito, annotation-api, app-name, asciidoctor, awaitility, aws-codebuild-workflow-ci, aws-v2-sdk, cache-caffeine, config-kubernetes, github-workflow-docker-registry, github-workflow-graal-docker-registry, graalvm, gradle, hibernate-reactive-jpa, hibernate-validator, http-client, java, java-application, jdbc-hikari, jib, junit, kubernetes, liquibase, logback, lombok, management, micrometer, micrometer-annotation, micrometer-cloudwatch, micrometer-prometheus, micronaut-build, mockito, netty-server, openapi, postgres, problem-json, reactor, reactor-http-client, readme, security, security-annotations, security-jwt, security-oauth2, serialization-bson, shade, swagger-ui, test-resources, tracing-opentelemetry-annotations, tracing-opentelemetry-exporter-jaeger, tracing-opentelemetry-exporter-logging, tracing-opentelemetry-exporter-otlp, tracing-opentelemetry-http, tracing-opentelemetry-jaeger, tracing-opentelemetry-xray, yaml]

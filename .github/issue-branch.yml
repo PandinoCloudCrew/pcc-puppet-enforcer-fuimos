@@ -1,0 +1,34 @@
+branchName: '${issue.number}-${issue.title,}'
+silent: false
+autoCloseIssue: true
+gitSafeReplacementChar: '-'
+openDraftPR: true
+copyIssueDescriptionToPR: true
+copyIssueLabelsToPR: true
+copyIssueAssigneeToPR: true
+copyIssueProjectsToPR: true
+copyIssueMilestoneToPR: true
+prSkipCI: true
+branches:
+  - label: defect
+    name: master
+    prTarget: master
+    prefix: bugfix/${issue.user.login}/
+    skip: false
+  - label: feature
+    name: master
+    prTarget: master
+    prefix: feature/${issue.user.login}/
+    skip: false
+  - label: debt
+    name: master
+    prTarget: master
+    prefix: debt/${issue.user.login}/
+    skip: false
+  - label: risk
+    name: master
+    prTarget: master
+    prefix: risk/${issue.user.login}/
+    skip: false
+  - label: '*'
+    skip: true

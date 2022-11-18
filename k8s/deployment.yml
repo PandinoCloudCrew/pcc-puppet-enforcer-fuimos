@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pcc-puppet-enforcer-fuimos-deployment
+  namespace: pcc-puppet-enforcer
+  labels:
+    app: pcc-puppet-enforcer-fuimos-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pcc-puppet-enforcer-fuimos-deployment
+  template:
+    metadata:
+      name: pcc-puppet-enforcer-fuimos-deployment
+      labels:
+        app: pcc-puppet-enforcer-fuimos-deployment
+      annotations:
+        linkerd.io/inject: enabled
+    spec:
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: pcc-registry
+      containers:
+        - name: pcc-puppet-enforcer-fuimos-container
+          image: registry.ops.pandino.co/pcc-puppet-enforcer/pcc-puppet-enforcer-fuimos:latest
+          imagePullPolicy: Always
+          env:
+            - name: MICRONAUT_ENVIRONMENTS
+              value: k8s,tailscale
+            - name: HC_VAULT_URI
+              valueFrom:
+                secretKeyRef:
+                  name: vault-config
+                  key: HC_VAULT_URI
+            - name: HC_VAULT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: vault-config
+                  key: HC_VAULT_TOKEN
+          ports:
+            - name: http
+              containerPort: 9900
+          readinessProbe:
+            tcpSocket:
+              port: 9900
+            initialDelaySeconds: 15
+            periodSeconds: 5
+            timeoutSeconds: 10
+            failureThreshold: 10
+            successThreshold: 1
+          livenessProbe:
+            tcpSocket:
+              port: 9900
+            initialDelaySeconds: 15
+            periodSeconds: 5
+            timeoutSeconds: 10
+            failureThreshold: 10
+            successThreshold: 1

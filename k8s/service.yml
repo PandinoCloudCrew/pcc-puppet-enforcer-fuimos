@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pcc-puppet-enforcer-fuimos-service
+  namespace: pcc-puppet-enforcer
+spec:
+  selector:
+    app: pcc-puppet-enforcer-fuimos-deployment
+  ports:
+    - protocol: TCP
+      port: 9900
