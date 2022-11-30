@@ -12,6 +12,24 @@ micronaut:
           - /health.*
   metrics:
     enabled: true
+    binders:
+      netty:
+        queues:
+          enabled: true
+      jvm:
+        enabled: true
+      web:
+        enabled: true
+      uptime:
+        enabled: true
+      processor:
+        enabled: true
+      files:
+        enabled: true
+      logback:
+        enabled: true
+      jdbc:
+        enabled: true
     export:
       prometheus:
         enabled: true

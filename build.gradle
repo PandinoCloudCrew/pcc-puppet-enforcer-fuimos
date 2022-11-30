@@ -70,7 +70,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("pcc.puppet.enforcer.app.Application")
+    mainClass.set("pcc.puppet.enforcer.app.App")
 }
 
 java {
