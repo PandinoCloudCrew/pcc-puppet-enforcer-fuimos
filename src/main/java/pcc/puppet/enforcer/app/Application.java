@@ -20,10 +20,8 @@ import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.vault.support.VaultResponse;
-import pcc.puppet.enforcer.app.configuration.hints.VaultRuntimeHints;
 import reactor.core.publisher.Hooks;
 
 @EnableScheduling
