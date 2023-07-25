@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.app;
+package pcc.puppet.enforcer.app.configuration;
 
-import lombok.Generated;
-import lombok.experimental.UtilityClass;
+import io.micrometer.observation.ObservationRegistry;
+import io.micrometer.observation.aop.ObservedAspect;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-@Generated
-@UtilityClass
-public class Project {
-
-  public static final String VERSION = "@VERSION@";
-  public static final String NAME = "@NAME@";
+@Configuration
+public class ObservabilityConfiguration {
+  @Bean
+  public ObservedAspect observedAspect(ObservationRegistry observationRegistry) {
+    return new ObservedAspect(observationRegistry);
+  }
 }

@@ -1,25 +1,38 @@
 name: Deploy Version From TAG
 on:
   workflow_dispatch:
+    inputs:
+      image_variant:
+        description: 'Image variant'
+        required: false
+        default: ''
+        type: choice
+        options:
+          -
+          - '-native'
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Tailscale
-        uses: tailscale/github-action@v1
+        uses: tailscale/github-action@v2
         with:
           authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
-          version: 1.32.0
-      - uses: actions/checkout@master
+          version: 1.36.1
       - name: Set Kubernetes Context
         uses: azure/k8s-set-context@v3
         with:
           method: kubeconfig
           kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}
+      - name: lowercase repository name
+        env:
+          DOCKER_IMAGE_UPPERCASE: ${{ secrets.DOCKER_REGISTRY_URL }}/${{ github.repository }}
+        run: |
+          echo "DOCKER_IMAGE=${DOCKER_IMAGE_UPPERCASE,,}" >>${GITHUB_ENV}
       - name: deploy to cluster
         run: |
-          kubectl set image deployment/pcc-puppet-enforcer-fuimos-deployment pcc-puppet-enforcer-fuimos-container=${{ secrets.DOCKER_REGISTRY_URL }}/${{ secrets.DOCKER_REPOSITORY_PATH }}/pcc-puppet-enforcer-fuimos:${{ github.ref_name }}
+          kubectl set image deployment/pcc-puppet-enforcer-fuimos-deployment pcc-puppet-enforcer-fuimos-container=${DOCKER_IMAGE}${{ inputs.image_variant }}:${{ github.ref_name }}
       - name: verify deployment
         run: |
           kubectl rollout status deployment/pcc-puppet-enforcer-fuimos-deployment

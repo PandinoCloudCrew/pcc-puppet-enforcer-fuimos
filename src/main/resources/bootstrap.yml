@@ -1,22 +1,3 @@
-micronaut:
+spring:
   application:
     name: pcc-puppet-enforcer-fuimos
-  config-client:
-    enabled: true
-
-vault:
-  client:
-    uri: ${HC_VAULT_URI}
-    token: ${HC_VAULT_TOKEN}
-    kv-version: V2
-    config:
-      enabled: true
-
-tracing:
-  jaeger:
-    enabled: true
-    sampler:
-      probability: ${jaeger-sample:`1.0`}
-    sender:
-      agent-port: ${jaeger-port:`6831`}
-      agent-host: ${jaeger-host:`localhost`}

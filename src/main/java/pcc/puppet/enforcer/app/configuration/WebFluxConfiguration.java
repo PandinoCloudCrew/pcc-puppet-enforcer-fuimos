@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.app;
+package pcc.puppet.enforcer.app.configuration;
 
-import lombok.Generated;
-import lombok.experimental.UtilityClass;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.reactive.config.EnableWebFlux;
 
-@Generated
-@UtilityClass
-public class Project {
+@Configuration
+@EnableWebFlux
+public class WebFluxConfiguration {
 
-  public static final String VERSION = "@VERSION@";
-  public static final String NAME = "@NAME@";
+  @Bean
+  HttpStatus defaultHttpStatus() {
+    return HttpStatus.NOT_IMPLEMENTED;
+  }
 }

@@ -23,7 +23,7 @@ spec:
         - name: pcc-registry
       containers:
         - name: pcc-puppet-enforcer-fuimos-container
-          image: registry.ops.pandino.co/pcc-puppet-enforcer/pcc-puppet-enforcer-fuimos:latest
+          image: ghcr.io/pcc-puppet-enforcer/pcc-puppet-enforcer-fuimos:latest
           imagePullPolicy: Always
           env:
             - name: MICRONAUT_ENVIRONMENTS

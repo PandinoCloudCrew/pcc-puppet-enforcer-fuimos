@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.app;
+package pcc.puppet.enforcer.app.error.response;
 
-import lombok.Generated;
-import lombok.experimental.UtilityClass;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 
-@Generated
-@UtilityClass
-public class Project {
+public class ApplicationStateResponse extends ProblemDetail {
 
-  public static final String VERSION = "@VERSION@";
-  public static final String NAME = "@NAME@";
+  public ApplicationStateResponse() {
+    super(HttpStatus.INTERNAL_SERVER_ERROR.value());
+  }
 }

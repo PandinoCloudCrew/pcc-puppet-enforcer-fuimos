@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package pcc.puppet.enforcer.app;
 
-import io.micronaut.context.event.ApplicationEventListener;
-import io.micronaut.context.event.StartupEvent;
-import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.stereotype.Component;
 
 @Slf4j
-@Singleton
-public class StartupListener implements ApplicationEventListener<StartupEvent> {
+@Component
+public class StartupListener implements ApplicationListener<ApplicationStartedEvent> {
 
   @Override
-  public void onApplicationEvent(StartupEvent event) {
+  public void onApplicationEvent(ApplicationStartedEvent event) {
     log.info("application: {}, version: {}", Project.NAME, Project.VERSION);
   }
 }

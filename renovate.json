@@ -1,6 +1,12 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base"
-  ]
+  "extends": ["config:base"],
+  "addLabels": ["risk", "puppet-enforcer"],
+  "assignAutomerge": true,
+  "assignees": ["yesid-bocanegra"],
+  "autoApprove": true,
+  "automerge": true,
+  "automergeType": "pr",
+  "automergeStrategy": "squash",
+  "commitMessagePrefix": ":arrow_up: #54: "
 }

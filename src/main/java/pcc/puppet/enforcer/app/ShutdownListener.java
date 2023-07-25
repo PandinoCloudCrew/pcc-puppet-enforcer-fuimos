@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package pcc.puppet.enforcer.app;
 
-import io.micronaut.context.event.ApplicationEventListener;
-import io.micronaut.context.event.ShutdownEvent;
-import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.stereotype.Component;
 
 @Slf4j
-@Singleton
-public class ShutdownListener implements ApplicationEventListener<ShutdownEvent> {
-
+@Component
+public class ShutdownListener implements ApplicationListener<ContextClosedEvent> {
   @Override
-  public void onApplicationEvent(ShutdownEvent event) {
+  public void onApplicationEvent(ContextClosedEvent event) {
     log.info("shutting down application: {}, version: {}", Project.NAME, Project.VERSION);
   }
 }

@@ -1,58 +1,47 @@
-micronaut:
-  application:
-    name: test-pcc-puppet-enforcer-fuimos
-  server:
-    port: ${random.port}
-    netty:
-      access-logger:
-        enabled: true
-        loggerName: HTTP_ACCESS_LOGGER
-        log-format: "%h %r %s %b"
-  metrics:
-    enabled: false
-    export:
-      prometheus:
-        enabled: false
-  otel:
-    enabled: false
-  security:
-    enabled: false
+server:
+  shutdown: graceful
+
+spring:
+  cloud:
+    vault:
+      enabled: false
   http:
     services:
       pcc-realm-organization:
-        url: http://localhost:${micronaut.server.port}
+        url: http://localhost:${server.port}
         path: /realm/organization
+      pcc-realm-department:
+        url: http://localhost:${server.port}
+        path: /realm/department
+      pcc-realm-member:
+        url: http://localhost:${server.port}
+        path: /realm/member
+      pcc-realm-passport:
+        url: http://localhost:${server.port}
+        path: /realm/passport
+      provider-rest-countries:
+        url: http://localhost:${server.port}
+        path: /rest-countries
+      provider-keycloak:
+        url: http://localhost:${server.port}
+        path: /keycloak
+      provider-vault:
+        url: http://localhost:${server.port}
+        path: /vault
 
-flyway:
-  enabled: true
-  datasources:
-    default:
-      enabled: true
-      url: 'jdbc:h2:mem:test-realm;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;'
-      username: sa
-      password: ''
-      locations:
-        - classpath:migration
+provider:
+  keycloak:
+    adminClientId: adminClientId
+    clientId: testPlaceholderClient
+    clientSecret: testPlaceholderSecret
+    realm: test
 
-datasources:
-  default:
-    pooled: true
-    jmxExport: true
-    dbCreate: none
-    url: 'jdbc:h2:mem:test-realm;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;'
-    driverClassName: org.h2.Driver
-    dialect: H2
-    username: sa
-    password: ''
-
-r2dbc:
-  datasources:
-    default:
-      url: 'r2dbc:h2:mem:///test-realm;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;'
-      driverClassName: org.h2.Driver
-      username: sa
-      password: ''
-      dialect: h2
-      options:
-        driver: pool
-        protocol: h2:mem
+logging:
+  level:
+    reactor:
+      netty:
+        http:
+          client: INFO
+    io.micrometer: INFO
+    pcc: DEBUG
+    web: DEBUG
