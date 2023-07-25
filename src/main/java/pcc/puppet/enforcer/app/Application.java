@@ -30,7 +30,6 @@ import reactor.core.publisher.Hooks;
 @EnableConfigurationProperties
 @SpringBootApplication(scanBasePackages = {"pcc.puppet.*"})
 @RegisterReflectionForBinding({VaultResponse.class})
-@ImportRuntimeHints(VaultRuntimeHints.class)
 public class Application {
   /**
    * Entry point for app
