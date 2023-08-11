@@ -19,6 +19,14 @@ spring:
         lifecycle:
           enabled: true
           min-renewal: 1m
+  security:
+    oauth2:
+      resourceserver:
+        jwk:
+          jwk-set-uri: ${provider-keycloak-url}/realms/${keycloak-realm}/.well-known/openid-configuration
+          issuer-uri: ${provider-keycloak-url}/realms/${keycloak-realm}
+        jwt:
+          issuer: ${provider-keycloak-url}/realms/${keycloak-realm}
 
 logging:
   pattern:
@@ -27,3 +35,36 @@ logging:
     reactor.netty.http.client: INFO
     io.micrometer: INFO
     pcc: DEBUG
+
+management:
+  tracing:
+    baggage:
+      correlation:
+        enabled: true
+        fields:
+          - track-id
+      remote-fields:
+        - track-id
+    sampling:
+      probability: 1.0
+    propagation:
+      type: w3c
+  otlp:
+    tracing:
+      endpoint: http://mbp.lan:4318/v1/traces
+      headers:
+        track-id: track-id
+        X-Org-Id: X-Org-Id
+        X-Dept-Id: X-Dept-Id
+        X-Member-Id: X-Member-Id
+    metrics:
+      export:
+        enabled: true
+        url: http://mbp.lan:4318/v1/metrics
+
+provider:
+  keycloak:
+    adminClientId: ${keycloak-admin-clientId}
+    clientId: ${keycloak-clientId}
+    clientSecret: ${keycloak-clientSecret}
+    realm: ${keycloak-realm}
