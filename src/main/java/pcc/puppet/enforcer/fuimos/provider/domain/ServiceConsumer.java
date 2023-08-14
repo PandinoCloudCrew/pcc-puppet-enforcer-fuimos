@@ -16,10 +16,32 @@
 
 package pcc.puppet.enforcer.fuimos.provider.domain;
 
+import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
+import java.time.Instant;
+import lombok.Builder;
 import lombok.Data;
+import lombok.extern.jackson.Jacksonized;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.Version;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
+@Document
+@Builder
+@Jacksonized
 public class ServiceConsumer {
 
-  private String id;
+  @Id @NotNull private String id;
+  private String name;
+
+  @NotNull @CreatedBy private String createdBy;
+  @NotNull @CreatedDate private Instant createdAt;
+  @Nullable @LastModifiedBy private String updatedBy;
+  @Nullable @LastModifiedDate private Instant updatedAt;
+  @Version private Integer version;
 }
