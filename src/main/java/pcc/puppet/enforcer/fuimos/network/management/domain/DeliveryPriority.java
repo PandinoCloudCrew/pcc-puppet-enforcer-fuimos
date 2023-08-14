@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.network.domain;
+package pcc.puppet.enforcer.fuimos.network.management.domain;
 
 public enum DeliveryPriority {
   HIGH,

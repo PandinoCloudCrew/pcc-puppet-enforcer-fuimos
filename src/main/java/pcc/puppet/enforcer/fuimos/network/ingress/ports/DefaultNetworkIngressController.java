@@ -17,34 +17,37 @@
 package pcc.puppet.enforcer.fuimos.network.ingress.ports;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import pcc.puppet.enforcer.fuimos.network.ingress.command.DeviceAuthenticateCommand;
 import pcc.puppet.enforcer.fuimos.network.ingress.command.DeviceRegisterCommand;
 import pcc.puppet.enforcer.fuimos.network.ingress.command.MessageSendCommand;
-import pcc.puppet.enforcer.fuimos.network.ingress.event.DeviceAuthenticationEvent;
 import pcc.puppet.enforcer.fuimos.network.ingress.event.DeviceRegistrationEvent;
 import pcc.puppet.enforcer.fuimos.network.ingress.event.MessageSentEvent;
 import pcc.puppet.enforcer.fuimos.network.ingress.service.NetworkAuthentication;
 import pcc.puppet.enforcer.fuimos.network.ingress.service.OperatorAuthentication;
+import reactor.core.publisher.Mono;
 
-@Service
+@RestController
+@RequestMapping("network")
 @RequiredArgsConstructor
-public class DefaultNetworkIngress implements NetworkIngress {
+public class DefaultNetworkIngressController {
 
   private final OperatorAuthentication operatorAuthentication;
   private final NetworkAuthentication networkAuthentication;
   private final MessagePendingQueue messagePendingQueue;
 
-  @Override
-  public MessageSentEvent send(MessageSendCommand message) {
+  @PostMapping("send")
+  public Mono<MessageSentEvent> send(MessageSendCommand message) {
     return messagePendingQueue.accept(message);
   }
 
-  @Override
-  public DeviceRegistrationEvent join(DeviceRegisterCommand device) {
+  @PostMapping("join")
+  public Mono<DeviceRegistrationEvent> join(DeviceRegisterCommand device) {
     DeviceAuthenticateCommand authenticateCommand = networkAuthentication.request(device);
-    DeviceAuthenticationEvent authenticationEvent =
-        operatorAuthentication.authenticate(authenticateCommand);
-    return networkAuthentication.register(authenticationEvent);
+    return operatorAuthentication
+        .authenticate(authenticateCommand)
+        .flatMap(networkAuthentication::register);
   }
 }

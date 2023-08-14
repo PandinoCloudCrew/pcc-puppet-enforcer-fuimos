@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos;
+package pcc.puppet.enforcer.fuimos.network.management.command;
 
+import jakarta.validation.constraints.NotNull;
+import java.time.Duration;
 import lombok.Data;
 
 @Data
-public class NestedMock {
+public class NetworkCreateCommand {
 
-  private String id;
-  private String description;
+  @NotNull private String name;
+  @NotNull private Duration sessionDuration;
 }

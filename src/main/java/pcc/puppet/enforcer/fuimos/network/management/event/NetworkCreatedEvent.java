@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.network.domain;
+package pcc.puppet.enforcer.fuimos.network.management.event;
 
-public enum ServiceType {
-  MESSAGE
+import java.time.Instant;
+import lombok.Data;
+import pcc.puppet.enforcer.fuimos.network.management.domain.NetworkStatus;
+
+@Data
+public class NetworkCreatedEvent {
+  private String id;
+  private String name;
+  private NetworkStatus status;
+  private Instant createdAt;
 }

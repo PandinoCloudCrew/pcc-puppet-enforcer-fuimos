@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.network.ingress.ports;
+package pcc.puppet.enforcer.fuimos.network.management.domain;
 
-import pcc.puppet.enforcer.fuimos.network.ingress.command.DeviceRegisterCommand;
-import pcc.puppet.enforcer.fuimos.network.ingress.command.MessageSendCommand;
-import pcc.puppet.enforcer.fuimos.network.ingress.event.DeviceRegistrationEvent;
-import pcc.puppet.enforcer.fuimos.network.ingress.event.MessageSentEvent;
-
-public interface NetworkIngress {
-
-  MessageSentEvent send(MessageSendCommand message);
-
-  DeviceRegistrationEvent join(DeviceRegisterCommand device);
+public enum NetworkStatus {
+  ACTIVE,
+  INACTIVE,
+  TERMINATED
 }

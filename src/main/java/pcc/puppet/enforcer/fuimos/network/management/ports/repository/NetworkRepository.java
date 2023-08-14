@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.network.domain;
+package pcc.puppet.enforcer.fuimos.network.management.ports.repository;
 
-import lombok.Data;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.stereotype.Repository;
+import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
 
-@Data
-public class Network {
-  private String id;
-}
+@Repository
+public interface NetworkRepository extends ReactiveCrudRepository<Network, String> {}

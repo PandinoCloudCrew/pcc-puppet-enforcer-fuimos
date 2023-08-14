@@ -14,15 +14,8 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.origination.domain;
+package pcc.puppet.enforcer.fuimos.network.management.domain;
 
-import java.util.List;
-import lombok.Data;
-import pcc.puppet.enforcer.fuimos.medium.Message;
-
-@Data
-public class Outbox {
-
-  private String id;
-  private List<Message> messages;
+public enum ServiceType {
+  MESSAGE
 }
