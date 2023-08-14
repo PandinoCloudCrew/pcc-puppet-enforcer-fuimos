@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.provider.ports;
+package pcc.puppet.enforcer.fuimos.provider.management.ports.repository;
 
-public interface OperatorIngress {}
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.stereotype.Repository;
+import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
+
+@Repository
+public interface ServiceOperatorRepository
+    extends ReactiveCrudRepository<ServiceOperator, String> {}

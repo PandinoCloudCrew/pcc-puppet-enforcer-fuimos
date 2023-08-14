@@ -29,6 +29,7 @@ import pcc.puppet.enforcer.fuimos.network.management.domain.NetworkStatus;
 import pcc.puppet.enforcer.fuimos.network.management.event.NetworkCreatedEvent;
 import pcc.puppet.enforcer.fuimos.network.management.ports.NetworkMapper;
 import pcc.puppet.enforcer.fuimos.network.management.ports.repository.NetworkRepository;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -41,15 +42,26 @@ public class DefaultNetworkService implements NetworkService {
 
   @Override
   public Mono<NetworkCreatedEvent> create(NetworkCreateCommand command) {
-    Network network = Network.builder()
-        .id(Data.id())
-        .status(NetworkStatus.ACTIVE)
-        .name(command.getName())
-        .sessionDuration(command.getSessionDuration())
-        .salt(KeyGenerators.string().generateKey())
-        .build();
+    Network network =
+        Network.builder()
+            .id(Data.id())
+            .status(NetworkStatus.ACTIVE)
+            .name(command.getName())
+            .sessionDuration(command.getSessionDuration())
+            .salt(KeyGenerators.string().generateKey())
+            .build();
     TextEncryptor encryptor = Encryptors.text(network.getId(), network.getSalt());
     network.setFingerprint(encryptor.encrypt(command.getName()));
     return networkRepository.save(network).map(networkMapper::toEvent);
+  }
+
+  @Override
+  public Mono<Network> findById(String id) {
+    return networkRepository.findById(id);
+  }
+
+  @Override
+  public Flux<NetworkCreatedEvent> getAllNetworks() {
+    return networkRepository.findAll().map(networkMapper::toEvent);
   }
 }

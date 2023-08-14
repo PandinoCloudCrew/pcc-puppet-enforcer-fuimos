@@ -14,36 +14,32 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.network.management.ports.api;
+package pcc.puppet.enforcer.fuimos.provider.management.ports.api;
 
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pcc.puppet.enforcer.fuimos.network.management.command.NetworkCreateCommand;
-import pcc.puppet.enforcer.fuimos.network.management.event.NetworkCreatedEvent;
-import pcc.puppet.enforcer.fuimos.network.management.service.NetworkService;
-import reactor.core.publisher.Flux;
+import pcc.puppet.enforcer.fuimos.provider.management.command.ServiceOperatorCreateCommand;
+import pcc.puppet.enforcer.fuimos.provider.management.event.ServiceOperatorCreatedEvent;
+import pcc.puppet.enforcer.fuimos.provider.management.service.OperatorManagementService;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @Validated
 @RestController
-@RequestMapping("network")
+@RequestMapping("/operator/management")
 @RequiredArgsConstructor
-public class NetworkController {
-  private final NetworkService networkService;
+public class OperatorManagementController {
+  private final OperatorManagementService managementService;
 
   @PostMapping
-  public Mono<NetworkCreatedEvent> create(@Valid @RequestBody NetworkCreateCommand command) {
-    return networkService.create(command);
-  }
-
-  @GetMapping
-  public Flux<NetworkCreatedEvent> getAll() {
-    return networkService.getAllNetworks();
+  public Mono<ServiceOperatorCreatedEvent> create(
+      @Valid @RequestBody ServiceOperatorCreateCommand command) {
+    return managementService.create(command);
   }
 }

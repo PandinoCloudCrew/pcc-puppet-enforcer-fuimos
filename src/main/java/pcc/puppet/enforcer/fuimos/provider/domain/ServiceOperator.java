@@ -16,13 +16,38 @@
 
 package pcc.puppet.enforcer.fuimos.provider.domain;
 
+import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.time.Instant;
+import lombok.Builder;
 import lombok.Data;
-import pcc.puppet.enforcer.fuimos.network.domain.ServiceType;
+import lombok.extern.jackson.Jacksonized;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.Version;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
+import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
+import pcc.puppet.enforcer.fuimos.network.management.domain.ServiceType;
 
 @Data
-public class ServiceOperator {
+@Document
+@Builder
+@Jacksonized
+public class ServiceOperator implements Serializable {
 
-  private String id;
-  private String name;
-  private ServiceType type;
+  @Id @NotNull private String id;
+  @NotNull private String name;
+  @NotNull private ServiceType type;
+  @DocumentReference @NotNull private Network network;
+
+  @NotNull @CreatedBy private String createdBy;
+  @NotNull @CreatedDate private Instant createdAt;
+  @Nullable @LastModifiedBy private String updatedBy;
+  @Nullable @LastModifiedDate private Instant updatedAt;
+  @Version private Integer version;
 }

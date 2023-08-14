@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.network.management.service;
+package pcc.puppet.enforcer.fuimos.provider.management.command;
 
-import pcc.puppet.enforcer.fuimos.network.management.command.NetworkCreateCommand;
-import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
-import pcc.puppet.enforcer.fuimos.network.management.event.NetworkCreatedEvent;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+import pcc.puppet.enforcer.fuimos.network.management.domain.ServiceType;
 
-public interface NetworkService {
-  Mono<NetworkCreatedEvent> create(NetworkCreateCommand command);
-
-  Mono<Network> findById(String id);
-
-  Flux<NetworkCreatedEvent> getAllNetworks();
+@Data
+public class ServiceOperatorCreateCommand {
+  @NotNull private String name;
+  @NotNull private ServiceType type;
+  @NotNull private String networkId;
 }

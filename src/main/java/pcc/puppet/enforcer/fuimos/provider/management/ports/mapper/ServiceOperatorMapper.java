@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.network.management.service;
+package pcc.puppet.enforcer.fuimos.provider.management.ports.mapper;
 
-import pcc.puppet.enforcer.fuimos.network.management.command.NetworkCreateCommand;
-import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
-import pcc.puppet.enforcer.fuimos.network.management.event.NetworkCreatedEvent;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import org.mapstruct.Mapper;
+import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
+import pcc.puppet.enforcer.fuimos.provider.management.event.ServiceOperatorCreatedEvent;
 
-public interface NetworkService {
-  Mono<NetworkCreatedEvent> create(NetworkCreateCommand command);
+@Mapper(componentModel = "spring")
+public interface ServiceOperatorMapper {
 
-  Mono<Network> findById(String id);
-
-  Flux<NetworkCreatedEvent> getAllNetworks();
+  ServiceOperatorCreatedEvent toEvent(ServiceOperator operator);
 }
