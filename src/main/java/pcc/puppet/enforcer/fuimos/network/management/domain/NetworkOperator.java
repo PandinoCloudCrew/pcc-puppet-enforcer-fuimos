@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.provider.domain;
+package pcc.puppet.enforcer.fuimos.network.management.domain;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.time.Instant;
 import lombok.Builder;
 import lombok.Data;
@@ -30,17 +29,17 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
+import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
 
 @Data
 @Document
 @Builder
 @Jacksonized
-public class ServiceConsumer implements Serializable {
-
+public class NetworkOperator {
   @Id @NotNull private String id;
-  @NotNull private String operatorId;
-  private String name;
-
+  @DocumentReference @NotNull private Network network;
+  @DocumentReference @NotNull private ServiceOperator operator;
   @NotNull @CreatedBy private String createdBy;
   @NotNull @CreatedDate private Instant createdAt;
   @Nullable @LastModifiedBy private String updatedBy;

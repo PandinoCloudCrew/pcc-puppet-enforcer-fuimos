@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.provider.domain;
+package pcc.puppet.enforcer.fuimos.medium.domain;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
@@ -30,16 +31,18 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 @Data
 @Document
 @Builder
 @Jacksonized
-public class ServiceConsumer implements Serializable {
+public class Inbox implements Serializable {
 
   @Id @NotNull private String id;
-  @NotNull private String operatorId;
-  private String name;
+  @NotNull private String deviceId;
+  @NotNull private String consumerId;
+  @DocumentReference private List<Message> messages;
 
   @NotNull @CreatedBy private String createdBy;
   @NotNull @CreatedDate private Instant createdAt;

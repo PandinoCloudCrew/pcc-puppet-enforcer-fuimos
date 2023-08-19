@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.network.ingress.event;
+package pcc.puppet.enforcer.app.tools;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.extern.jackson.Jacksonized;
+import java.util.regex.Pattern;
+import lombok.experimental.UtilityClass;
 
-@Data
-@Builder
-@Jacksonized
-public class DeviceRegistrationEvent {
-  private String id;
-  private String operatorId;
-  private String operatorName;
-  private String networkId;
-  private String networkName;
-  private String consumerId;
+@UtilityClass
+public class Mask {
+  private static final Pattern lastThree = Pattern.compile(".(?=.{3})");
+  private static final String STAR = "*";
+
+  public String lastThree(String content) {
+    return lastThree.matcher(content).replaceAll(STAR);
+  }
 }

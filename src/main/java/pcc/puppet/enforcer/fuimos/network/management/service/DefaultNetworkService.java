@@ -23,11 +23,12 @@ import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.stereotype.Service;
 import pcc.puppet.enforcer.app.tools.Data;
+import pcc.puppet.enforcer.fuimos.common.error.NetworkNotFound;
 import pcc.puppet.enforcer.fuimos.network.management.command.NetworkCreateCommand;
 import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
 import pcc.puppet.enforcer.fuimos.network.management.domain.NetworkStatus;
 import pcc.puppet.enforcer.fuimos.network.management.event.NetworkCreatedEvent;
-import pcc.puppet.enforcer.fuimos.network.management.ports.NetworkMapper;
+import pcc.puppet.enforcer.fuimos.network.management.ports.mapper.NetworkMapper;
 import pcc.puppet.enforcer.fuimos.network.management.ports.repository.NetworkRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -56,8 +57,10 @@ public class DefaultNetworkService implements NetworkService {
   }
 
   @Override
-  public Mono<Network> findById(String id) {
-    return networkRepository.findById(id);
+  public Mono<Network> findById(String trackId, String id) {
+    return networkRepository
+        .findById(id)
+        .switchIfEmpty(Mono.error(new NetworkNotFound(trackId, id)));
   }
 
   @Override

@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.network.ingress.event;
+package pcc.puppet.enforcer.fuimos.common.error;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.extern.jackson.Jacksonized;
+import pcc.puppet.enforcer.fuimos.provider.domain.ServiceConsumer;
 
-@Data
-@Builder
-@Jacksonized
-public class DeviceRegistrationEvent {
-  private String id;
-  private String operatorId;
-  private String operatorName;
-  private String networkId;
-  private String networkName;
-  private String consumerId;
+public class ServiceConsumerNotFound extends RecordNotFound {
+
+  public ServiceConsumerNotFound(String trackId, String recordId) {
+    super(ServiceConsumer.class.getName(), trackId, recordId);
+  }
 }

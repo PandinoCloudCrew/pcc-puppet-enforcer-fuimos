@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.network.management.ports;
+package pcc.puppet.enforcer.fuimos.medium.domain;
 
-import org.mapstruct.Mapper;
-import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
-import pcc.puppet.enforcer.fuimos.network.management.event.NetworkCreatedEvent;
-
-@Mapper(componentModel = "spring")
-public interface NetworkMapper {
-  NetworkCreatedEvent toEvent(Network network);
+public enum DeviceType {
+  PHONE,
+  EMAIL
 }

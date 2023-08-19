@@ -20,9 +20,10 @@ import pcc.puppet.enforcer.fuimos.network.ingress.command.DeviceAuthenticateComm
 import pcc.puppet.enforcer.fuimos.network.ingress.command.DeviceRegisterCommand;
 import pcc.puppet.enforcer.fuimos.network.ingress.event.DeviceAuthenticationEvent;
 import pcc.puppet.enforcer.fuimos.network.ingress.event.DeviceRegistrationEvent;
+import reactor.core.publisher.Mono;
 
 public interface NetworkAuthentication {
-  DeviceAuthenticateCommand request(DeviceRegisterCommand registerCommand);
+  DeviceAuthenticationEvent createOrGet(DeviceAuthenticateCommand registerCommand);
 
-  DeviceRegistrationEvent register(DeviceAuthenticationEvent authenticationEvent);
+  Mono<DeviceRegistrationEvent> register(String trackId, DeviceRegisterCommand command);
 }

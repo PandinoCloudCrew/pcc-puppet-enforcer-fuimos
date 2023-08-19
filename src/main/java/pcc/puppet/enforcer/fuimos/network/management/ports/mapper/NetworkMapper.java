@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.network.ingress.event;
+package pcc.puppet.enforcer.fuimos.network.management.ports.mapper;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.extern.jackson.Jacksonized;
+import org.mapstruct.Mapper;
+import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
+import pcc.puppet.enforcer.fuimos.network.management.event.NetworkCreatedEvent;
 
-@Data
-@Builder
-@Jacksonized
-public class DeviceRegistrationEvent {
-  private String id;
-  private String operatorId;
-  private String operatorName;
-  private String networkId;
-  private String networkName;
-  private String consumerId;
+@Mapper(componentModel = "spring")
+public interface NetworkMapper {
+  NetworkCreatedEvent toEvent(Network network);
 }

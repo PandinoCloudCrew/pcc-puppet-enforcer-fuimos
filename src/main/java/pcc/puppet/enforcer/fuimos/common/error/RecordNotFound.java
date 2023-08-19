@@ -14,15 +14,20 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.destination;
+package pcc.puppet.enforcer.fuimos.common.error;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import pcc.puppet.enforcer.fuimos.medium.Device;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ReceiverDevice extends Device {
+public class RecordNotFound extends Exception {
+  private final String trackId;
+  private final String recordId;
 
-  private Inbox inbox;
+  public RecordNotFound(String clazz, String trackId, String recordId) {
+    super(String.format("(%s) %s with id (%s) not found", trackId, clazz, recordId));
+    this.trackId = trackId;
+    this.recordId = recordId;
+  }
 }

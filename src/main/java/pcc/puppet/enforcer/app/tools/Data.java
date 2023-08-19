@@ -14,20 +14,25 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.network.ingress.event;
+package pcc.puppet.enforcer.app.tools;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.extern.jackson.Jacksonized;
+import com.github.f4b6a3.ulid.Ulid;
+import com.github.f4b6a3.ulid.UlidCreator;
+import java.time.Instant;
+import lombok.experimental.UtilityClass;
 
-@Data
-@Builder
-@Jacksonized
-public class DeviceRegistrationEvent {
-  private String id;
-  private String operatorId;
-  private String operatorName;
-  private String networkId;
-  private String networkName;
-  private String consumerId;
+@UtilityClass
+public class Data {
+
+  public Ulid ulid() {
+    return UlidCreator.getMonotonicUlid();
+  }
+
+  public String id() {
+    return ulid().toLowerCase();
+  }
+
+  public Instant now() {
+    return Instant.now();
+  }
 }

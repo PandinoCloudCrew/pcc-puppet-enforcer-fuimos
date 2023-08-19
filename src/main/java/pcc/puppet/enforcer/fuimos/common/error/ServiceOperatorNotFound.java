@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.origination.domain;
+package pcc.puppet.enforcer.fuimos.common.error;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import pcc.puppet.enforcer.fuimos.medium.Device;
+import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
-public class SenderDevice extends Device {
-  private Outbox outbox;
+public class ServiceOperatorNotFound extends RecordNotFound {
+
+  public ServiceOperatorNotFound(String trackId, String recordId) {
+    super(ServiceOperator.class.getName(), trackId, recordId);
+  }
 }

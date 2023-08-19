@@ -16,28 +16,13 @@
 
 package pcc.puppet.enforcer.fuimos.provider.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import pcc.puppet.enforcer.app.tools.Data;
 import pcc.puppet.enforcer.fuimos.provider.command.ServiceConsumerCreateCommand;
 import pcc.puppet.enforcer.fuimos.provider.domain.ServiceConsumer;
 import pcc.puppet.enforcer.fuimos.provider.event.ServiceConsumerCreationEvent;
-import pcc.puppet.enforcer.fuimos.provider.ports.mapper.ServiceConsumerMapper;
-import pcc.puppet.enforcer.fuimos.provider.ports.repository.ServiceConsumerRepository;
 import reactor.core.publisher.Mono;
 
-@Slf4j
-@Service
-@RequiredArgsConstructor
-public class DefaultServiceConsumerService implements ServiceConsumerService {
-  private final ServiceConsumerRepository consumerRepository;
-  private final ServiceConsumerMapper consumerMapper;
+public interface ConsumerManagementService {
+  Mono<ServiceConsumerCreationEvent> create(ServiceConsumerCreateCommand command);
 
-  @Override
-  public Mono<ServiceConsumerCreationEvent> create(ServiceConsumerCreateCommand command) {
-    ServiceConsumer serviceConsumer =
-        ServiceConsumer.builder().id(Data.id()).name(command.getName()).build();
-    return consumerRepository.save(serviceConsumer).map(consumerMapper::toEvent);
-  }
+  Mono<ServiceConsumer> findById(String trackId, String id);
 }

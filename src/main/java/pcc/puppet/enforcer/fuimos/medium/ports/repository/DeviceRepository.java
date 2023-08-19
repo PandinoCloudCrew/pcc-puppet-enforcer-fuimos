@@ -14,20 +14,11 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.network.ingress.event;
+package pcc.puppet.enforcer.fuimos.medium.ports.repository;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.extern.jackson.Jacksonized;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.stereotype.Repository;
+import pcc.puppet.enforcer.fuimos.medium.domain.Device;
 
-@Data
-@Builder
-@Jacksonized
-public class DeviceRegistrationEvent {
-  private String id;
-  private String operatorId;
-  private String operatorName;
-  private String networkId;
-  private String networkName;
-  private String consumerId;
-}
+@Repository
+public interface DeviceRepository extends ReactiveCrudRepository<Device, String> {}

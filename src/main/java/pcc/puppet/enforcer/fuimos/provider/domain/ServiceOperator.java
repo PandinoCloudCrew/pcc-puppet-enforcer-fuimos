@@ -43,6 +43,7 @@ public class ServiceOperator implements Serializable {
   @Id @NotNull private String id;
   @NotNull private String name;
   @NotNull private ServiceType type;
+  @NotNull private String salt;
   @DocumentReference @NotNull private Network network;
 
   @NotNull @CreatedBy private String createdBy;

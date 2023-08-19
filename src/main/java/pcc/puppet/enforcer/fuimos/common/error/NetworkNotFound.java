@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.destination;
+package pcc.puppet.enforcer.fuimos.common.error;
 
-import java.util.List;
-import lombok.Data;
-import pcc.puppet.enforcer.fuimos.medium.Message;
+import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
 
-@Data
-public class Inbox {
+public class NetworkNotFound extends RecordNotFound {
 
-  private String id;
-  private List<Message> messages;
+  public NetworkNotFound(String trackId, String recordId) {
+    super(Network.class.getName(), trackId, recordId);
+  }
 }

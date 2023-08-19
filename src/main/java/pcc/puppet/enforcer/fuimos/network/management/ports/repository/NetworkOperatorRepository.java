@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.medium;
+package pcc.puppet.enforcer.fuimos.network.management.ports.repository;
 
-import lombok.Data;
-import pcc.puppet.enforcer.fuimos.network.domain.Network;
-import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.stereotype.Repository;
+import pcc.puppet.enforcer.fuimos.network.management.domain.NetworkOperator;
 
-@Data
-public class Device {
-
-  private String id;
-  private String address;
-  private String status;
-  private ServiceOperator provider;
-  private Network network;
-}
+@Repository
+public interface NetworkOperatorRepository
+    extends ReactiveCrudRepository<NetworkOperator, String> {}

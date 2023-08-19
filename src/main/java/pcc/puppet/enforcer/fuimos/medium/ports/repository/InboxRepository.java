@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.provider.service;
+package pcc.puppet.enforcer.fuimos.medium.ports.repository;
 
-import pcc.puppet.enforcer.fuimos.provider.command.ServiceConsumerCreateCommand;
-import pcc.puppet.enforcer.fuimos.provider.event.ServiceConsumerCreationEvent;
-import reactor.core.publisher.Mono;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.stereotype.Repository;
+import pcc.puppet.enforcer.fuimos.medium.domain.Inbox;
 
-public interface ServiceConsumerService {
-  Mono<ServiceConsumerCreationEvent> create(ServiceConsumerCreateCommand command);
-}
+@Repository
+public interface InboxRepository extends ReactiveCrudRepository<Inbox, String> {}

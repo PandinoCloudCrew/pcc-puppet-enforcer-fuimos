@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pcc.puppet.enforcer.fuimos.provider.command.ServiceConsumerCreateCommand;
 import pcc.puppet.enforcer.fuimos.provider.event.ServiceConsumerCreationEvent;
-import pcc.puppet.enforcer.fuimos.provider.service.ServiceConsumerService;
+import pcc.puppet.enforcer.fuimos.provider.service.ConsumerManagementService;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -36,10 +36,11 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ServiceConsumerController {
 
-  private final ServiceConsumerService serviceConsumerService;
+  private final ConsumerManagementService consumerManagementService;
 
   @PostMapping
-  public Mono<ServiceConsumerCreationEvent> create(@Valid @RequestBody ServiceConsumerCreateCommand command) {
-    return serviceConsumerService.create(command);
+  public Mono<ServiceConsumerCreationEvent> create(
+      @Valid @RequestBody ServiceConsumerCreateCommand command) {
+    return consumerManagementService.create(command);
   }
 }

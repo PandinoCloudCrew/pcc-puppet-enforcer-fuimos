@@ -25,7 +25,7 @@ import reactor.core.publisher.Mono;
 public interface NetworkService {
   Mono<NetworkCreatedEvent> create(NetworkCreateCommand command);
 
-  Mono<Network> findById(String id);
+  Mono<Network> findById(String trackId, String id);
 
   Flux<NetworkCreatedEvent> getAllNetworks();
 }

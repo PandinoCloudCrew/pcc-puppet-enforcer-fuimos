@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.provider.domain;
+package pcc.puppet.enforcer.fuimos.medium.domain;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
@@ -30,16 +30,26 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
+import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
+import pcc.puppet.enforcer.fuimos.provider.domain.ServiceConsumer;
+import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
 
 @Data
 @Document
 @Builder
 @Jacksonized
-public class ServiceConsumer implements Serializable {
+public class Device implements Serializable {
 
   @Id @NotNull private String id;
-  @NotNull private String operatorId;
-  private String name;
+  private String address;
+  private DeviceType type;
+  private String status;
+  @DocumentReference private Inbox inbox;
+  @DocumentReference private Outbox outbox;
+  @DocumentReference private ServiceConsumer consumer;
+  @DocumentReference private ServiceOperator operator;
+  @DocumentReference private Network network;
 
   @NotNull @CreatedBy private String createdBy;
   @NotNull @CreatedDate private Instant createdAt;
