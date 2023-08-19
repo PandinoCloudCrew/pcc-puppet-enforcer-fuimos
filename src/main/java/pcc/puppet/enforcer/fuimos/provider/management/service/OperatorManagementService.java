@@ -16,10 +16,13 @@
 
 package pcc.puppet.enforcer.fuimos.provider.management.service;
 
+import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
 import pcc.puppet.enforcer.fuimos.provider.management.command.ServiceOperatorCreateCommand;
 import pcc.puppet.enforcer.fuimos.provider.management.event.ServiceOperatorCreatedEvent;
 import reactor.core.publisher.Mono;
 
 public interface OperatorManagementService {
   Mono<ServiceOperatorCreatedEvent> create(ServiceOperatorCreateCommand command);
+
+  Mono<ServiceOperator> findById(String trackId, String id);
 }

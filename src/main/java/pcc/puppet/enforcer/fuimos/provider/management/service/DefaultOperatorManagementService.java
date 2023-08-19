@@ -18,8 +18,12 @@ package pcc.puppet.enforcer.fuimos.provider.management.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.stereotype.Service;
 import pcc.puppet.enforcer.app.tools.Data;
+import pcc.puppet.enforcer.fuimos.common.error.ServiceOperatorNotFound;
+import pcc.puppet.enforcer.fuimos.network.management.domain.NetworkOperator;
+import pcc.puppet.enforcer.fuimos.network.management.ports.repository.NetworkOperatorRepository;
 import pcc.puppet.enforcer.fuimos.network.management.service.NetworkService;
 import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
 import pcc.puppet.enforcer.fuimos.provider.management.command.ServiceOperatorCreateCommand;
@@ -35,21 +39,44 @@ public class DefaultOperatorManagementService implements OperatorManagementServi
   private final ServiceOperatorRepository operatorRepository;
   private final ServiceOperatorMapper operatorMapper;
   private final NetworkService networkService;
+  private final NetworkOperatorRepository networkOperatorRepository;
 
   @Override
   public Mono<ServiceOperatorCreatedEvent> create(ServiceOperatorCreateCommand command) {
     return networkService
-        .findById(command.getNetworkId())
+        .findById(command.getTrackId(), command.getNetworkId())
         .flatMap(
             network -> {
               ServiceOperator operator =
                   ServiceOperator.builder()
                       .id(Data.id())
+                      .salt(KeyGenerators.string().generateKey())
                       .name(command.getName())
                       .network(network)
                       .type(command.getType())
                       .build();
-              return operatorRepository.save(operator).map(operatorMapper::toEvent);
+              return operatorRepository
+                  .save(operator)
+                  .flatMap(
+                      entity -> {
+                        NetworkOperator networkOperator =
+                            NetworkOperator.builder()
+                                .id(Data.id())
+                                .network(network)
+                                .operator(entity)
+                                .build();
+                        return networkOperatorRepository
+                            .save(networkOperator)
+                            .map(NetworkOperator::getOperator);
+                      })
+                  .map(operatorMapper::toEvent);
             });
+  }
+
+  @Override
+  public Mono<ServiceOperator> findById(String trackId, String id) {
+    return operatorRepository
+        .findById(id)
+        .switchIfEmpty(Mono.error(new ServiceOperatorNotFound(trackId, id)));
   }
 }
