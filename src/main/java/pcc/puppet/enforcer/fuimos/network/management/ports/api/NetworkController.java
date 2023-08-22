@@ -16,12 +16,14 @@
 
 package pcc.puppet.enforcer.fuimos.network.management.ports.api;
 
+import jakarta.validation.constraints.NotNull;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pcc.puppet.enforcer.fuimos.network.management.command.NetworkCreateCommand;
@@ -38,12 +40,14 @@ public class NetworkController {
   private final NetworkService networkService;
 
   @PostMapping
-  public Mono<NetworkCreatedEvent> create(@Valid @RequestBody NetworkCreateCommand command) {
+  public Mono<NetworkCreatedEvent> create(
+      @NotNull @RequestHeader("track-id") String trackId,
+      @Valid @RequestBody NetworkCreateCommand command) {
     return networkService.create(command);
   }
 
   @GetMapping
-  public Flux<NetworkCreatedEvent> getAll() {
+  public Flux<NetworkCreatedEvent> getAll(@NotNull @RequestHeader("track-id") String trackId) {
     return networkService.getAllNetworks();
   }
 }

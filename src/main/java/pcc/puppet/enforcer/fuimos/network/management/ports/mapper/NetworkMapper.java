@@ -17,10 +17,24 @@
 package pcc.puppet.enforcer.fuimos.network.management.ports.mapper;
 
 import org.mapstruct.Mapper;
+import org.springframework.security.crypto.keygen.KeyGenerators;
+import pcc.puppet.enforcer.app.tools.Data;
+import pcc.puppet.enforcer.fuimos.network.management.command.NetworkCreateCommand;
 import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
+import pcc.puppet.enforcer.fuimos.network.management.domain.NetworkStatus;
 import pcc.puppet.enforcer.fuimos.network.management.event.NetworkCreatedEvent;
 
 @Mapper(componentModel = "spring")
 public interface NetworkMapper {
+  default Network fromCommand(NetworkCreateCommand command) {
+    return Network.builder()
+        .id(Data.id())
+        .status(NetworkStatus.ACTIVE)
+        .name(command.getName())
+        .sessionDuration(command.getSessionDuration())
+        .salt(KeyGenerators.string().generateKey())
+        .build();
+  }
+
   NetworkCreatedEvent toEvent(Network network);
 }

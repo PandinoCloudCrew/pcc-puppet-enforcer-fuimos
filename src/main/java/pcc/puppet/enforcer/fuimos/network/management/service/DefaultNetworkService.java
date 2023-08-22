@@ -20,13 +20,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
-import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.stereotype.Service;
-import pcc.puppet.enforcer.app.tools.Data;
 import pcc.puppet.enforcer.fuimos.common.error.NetworkNotFound;
 import pcc.puppet.enforcer.fuimos.network.management.command.NetworkCreateCommand;
 import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
-import pcc.puppet.enforcer.fuimos.network.management.domain.NetworkStatus;
 import pcc.puppet.enforcer.fuimos.network.management.event.NetworkCreatedEvent;
 import pcc.puppet.enforcer.fuimos.network.management.ports.mapper.NetworkMapper;
 import pcc.puppet.enforcer.fuimos.network.management.ports.repository.NetworkRepository;
@@ -43,14 +40,7 @@ public class DefaultNetworkService implements NetworkService {
 
   @Override
   public Mono<NetworkCreatedEvent> create(NetworkCreateCommand command) {
-    Network network =
-        Network.builder()
-            .id(Data.id())
-            .status(NetworkStatus.ACTIVE)
-            .name(command.getName())
-            .sessionDuration(command.getSessionDuration())
-            .salt(KeyGenerators.string().generateKey())
-            .build();
+    Network network = networkMapper.fromCommand(command);
     TextEncryptor encryptor = Encryptors.text(network.getId(), network.getSalt());
     network.setFingerprint(encryptor.encrypt(command.getName()));
     return networkRepository.save(network).map(networkMapper::toEvent);
