@@ -16,12 +16,14 @@
 
 package pcc.puppet.enforcer.fuimos.provider.ports.api;
 
+import jakarta.validation.constraints.NotNull;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pcc.puppet.enforcer.fuimos.provider.command.ServiceConsumerCreateCommand;
@@ -40,7 +42,9 @@ public class ServiceConsumerController {
 
   @PostMapping
   public Mono<ServiceConsumerCreationEvent> create(
+      @NotNull @RequestHeader("track-id") String trackId,
       @Valid @RequestBody ServiceConsumerCreateCommand command) {
-    return consumerManagementService.create(command);
+    log.info("creating service consumer");
+    return consumerManagementService.create(trackId, command);
   }
 }

@@ -30,6 +30,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 @Data
 @Document
@@ -38,7 +39,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class ServiceConsumer implements Serializable {
 
   @Id @NotNull private String id;
-  @NotNull private String operatorId;
+  @Id @NotNull private String naturalId;
+  @NotNull @DocumentReference private ServiceOperator operator;
   private String name;
 
   @NotNull @CreatedBy private String createdBy;

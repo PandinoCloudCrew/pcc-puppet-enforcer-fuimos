@@ -17,10 +17,20 @@
 package pcc.puppet.enforcer.fuimos.provider.ports.mapper;
 
 import org.mapstruct.Mapper;
+import pcc.puppet.enforcer.app.tools.Data;
+import pcc.puppet.enforcer.fuimos.provider.command.ServiceConsumerCreateCommand;
 import pcc.puppet.enforcer.fuimos.provider.domain.ServiceConsumer;
 import pcc.puppet.enforcer.fuimos.provider.event.ServiceConsumerCreationEvent;
 
 @Mapper(componentModel = "spring")
 public interface ServiceConsumerMapper {
+  default ServiceConsumer fromCommand(ServiceConsumerCreateCommand command) {
+    return ServiceConsumer.builder()
+        .id(Data.id())
+        .naturalId(command.getNaturalId())
+        .name(command.getName())
+        .build();
+  }
+
   ServiceConsumerCreationEvent toEvent(ServiceConsumer serviceConsumer);
 }

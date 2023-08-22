@@ -21,5 +21,7 @@ import lombok.Data;
 
 @Data
 public class ServiceConsumerCreateCommand {
+  @NotNull private String naturalId;
   @NotNull private String name;
+  @NotNull private String operatorId;
 }

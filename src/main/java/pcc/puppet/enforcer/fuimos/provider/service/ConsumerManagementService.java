@@ -22,7 +22,7 @@ import pcc.puppet.enforcer.fuimos.provider.event.ServiceConsumerCreationEvent;
 import reactor.core.publisher.Mono;
 
 public interface ConsumerManagementService {
-  Mono<ServiceConsumerCreationEvent> create(ServiceConsumerCreateCommand command);
+  Mono<ServiceConsumerCreationEvent> create(String trackId, ServiceConsumerCreateCommand command);
 
   Mono<ServiceConsumer> findById(String trackId, String id);
 }

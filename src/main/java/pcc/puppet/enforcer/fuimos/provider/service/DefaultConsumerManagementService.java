@@ -16,14 +16,16 @@
 
 package pcc.puppet.enforcer.fuimos.provider.service;
 
+import static pcc.puppet.enforcer.app.tools.Mask.lastThree;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pcc.puppet.enforcer.app.tools.Data;
 import pcc.puppet.enforcer.fuimos.common.error.ServiceConsumerNotFound;
 import pcc.puppet.enforcer.fuimos.provider.command.ServiceConsumerCreateCommand;
 import pcc.puppet.enforcer.fuimos.provider.domain.ServiceConsumer;
 import pcc.puppet.enforcer.fuimos.provider.event.ServiceConsumerCreationEvent;
+import pcc.puppet.enforcer.fuimos.provider.management.service.OperatorManagementService;
 import pcc.puppet.enforcer.fuimos.provider.ports.mapper.ServiceConsumerMapper;
 import pcc.puppet.enforcer.fuimos.provider.ports.repository.ServiceConsumerRepository;
 import reactor.core.publisher.Mono;
@@ -34,12 +36,23 @@ import reactor.core.publisher.Mono;
 public class DefaultConsumerManagementService implements ConsumerManagementService {
   private final ServiceConsumerRepository consumerRepository;
   private final ServiceConsumerMapper consumerMapper;
+  private final OperatorManagementService operatorManagementService;
 
   @Override
-  public Mono<ServiceConsumerCreationEvent> create(ServiceConsumerCreateCommand command) {
-    ServiceConsumer serviceConsumer =
-        ServiceConsumer.builder().id(Data.id()).name(command.getName()).build();
-    return consumerRepository.save(serviceConsumer).map(consumerMapper::toEvent);
+  public Mono<ServiceConsumerCreationEvent> create(
+      String trackId, ServiceConsumerCreateCommand command) {
+    return operatorManagementService
+        .findById(trackId, command.getOperatorId())
+        .flatMap(
+            operator -> {
+              ServiceConsumer consumer = consumerMapper.fromCommand(command);
+              consumer.setOperator(operator);
+              log.info(
+                  "creating consumer with id {} for operator {}",
+                  lastThree(consumer.getNaturalId()),
+                  operator.getId());
+              return consumerRepository.save(consumer).map(consumerMapper::toEvent);
+            });
   }
 
   @Override
