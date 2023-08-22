@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.network.ingress.domain;
+package pcc.puppet.enforcer.fuimos.network.management.ports.queue;
 
-import java.time.Instant;
-import lombok.Builder;
-import lombok.Data;
+import pcc.puppet.enforcer.fuimos.network.ingress.command.MessageSendCommand;
+import pcc.puppet.enforcer.fuimos.network.management.domain.OperatorQueue;
+import reactor.core.publisher.Mono;
 
-@Data
-@Builder
-public class OperatorQueue {
-
-  private String id;
-  private String name;
-  private String operatorId;
-  private String networkId;
-  private Instant createDate;
+public interface QueueManagementService {
+  Mono<OperatorQueue> create(MessageSendCommand message);
 }

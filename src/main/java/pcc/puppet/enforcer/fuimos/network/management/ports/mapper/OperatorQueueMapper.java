@@ -18,24 +18,21 @@ package pcc.puppet.enforcer.fuimos.network.management.ports.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants.ComponentModel;
-import org.springframework.security.crypto.keygen.KeyGenerators;
 import pcc.puppet.enforcer.app.tools.Data;
-import pcc.puppet.enforcer.fuimos.network.management.command.NetworkCreateCommand;
-import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
-import pcc.puppet.enforcer.fuimos.network.management.domain.NetworkStatus;
-import pcc.puppet.enforcer.fuimos.network.management.event.NetworkCreatedEvent;
+import pcc.puppet.enforcer.fuimos.network.ingress.command.MessageSendCommand;
+import pcc.puppet.enforcer.fuimos.network.management.domain.OperatorQueue;
 
 @Mapper(componentModel = ComponentModel.SPRING)
-public interface NetworkMapper {
-  default Network fromCommand(NetworkCreateCommand command) {
-    return Network.builder()
+public interface OperatorQueueMapper {
+  default OperatorQueue fromCommand(MessageSendCommand message) {
+    return OperatorQueue.builder()
         .id(Data.id())
-        .status(NetworkStatus.ACTIVE)
-        .name(command.getName())
-        .sessionDuration(command.getSessionDuration())
-        .salt(KeyGenerators.string().generateKey())
+        .trackId(message.getTrackId())
+        .type(message.getType())
+        .priority(message.getPriority())
+        .operator(message.getSender().getOperator())
+        .network(message.getSender().getNetwork())
+        .createDate(Data.now())
         .build();
   }
-
-  NetworkCreatedEvent toEvent(Network network);
 }
