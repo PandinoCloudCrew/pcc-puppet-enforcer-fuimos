@@ -16,11 +16,19 @@
 
 package pcc.puppet.enforcer.fuimos.common.error;
 
-import pcc.puppet.enforcer.fuimos.provider.domain.ServiceConsumer;
+import pcc.puppet.enforcer.app.tools.Mask;
+import pcc.puppet.enforcer.fuimos.medium.domain.Device;
 
-public class ServiceConsumerNotFound extends RecordNotFound {
+public class DeviceNotFound extends RecordNotFound {
 
-  public ServiceConsumerNotFound(String trackId, String recordId) {
-    super(ServiceConsumer.class.getSimpleName(), trackId, recordId);
+  public DeviceNotFound(String trackId, String recordId) {
+    super(Device.class.getSimpleName(), trackId, recordId);
+  }
+
+  public DeviceNotFound(String trackId, String address, String type) {
+    super(
+        Device.class.getSimpleName(),
+        trackId,
+        String.format("%s::%s", type, Mask.lastThree(address)));
   }
 }

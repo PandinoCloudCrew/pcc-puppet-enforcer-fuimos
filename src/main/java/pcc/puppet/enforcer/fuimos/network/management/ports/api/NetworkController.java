@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pcc.puppet.enforcer.fuimos.network.management.command.NetworkCreateCommand;
 import pcc.puppet.enforcer.fuimos.network.management.event.NetworkCreatedEvent;
-import pcc.puppet.enforcer.fuimos.network.management.service.NetworkService;
+import pcc.puppet.enforcer.fuimos.network.management.service.NetworkManagementService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -37,17 +37,17 @@ import reactor.core.publisher.Mono;
 @RequestMapping("network")
 @RequiredArgsConstructor
 public class NetworkController {
-  private final NetworkService networkService;
+  private final NetworkManagementService networkManagementService;
 
   @PostMapping
   public Mono<NetworkCreatedEvent> create(
       @NotNull @RequestHeader("track-id") String trackId,
       @Valid @RequestBody NetworkCreateCommand command) {
-    return networkService.create(command);
+    return networkManagementService.create(command);
   }
 
   @GetMapping
   public Flux<NetworkCreatedEvent> getAll(@NotNull @RequestHeader("track-id") String trackId) {
-    return networkService.getAllNetworks();
+    return networkManagementService.getAllNetworks();
   }
 }

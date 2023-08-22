@@ -33,7 +33,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class DefaultNetworkService implements NetworkService {
+public class DefaultNetworkManagementService implements NetworkManagementService {
 
   private final NetworkRepository networkRepository;
   private final NetworkMapper networkMapper;

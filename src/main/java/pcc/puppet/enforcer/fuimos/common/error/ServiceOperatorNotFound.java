@@ -21,6 +21,6 @@ import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
 public class ServiceOperatorNotFound extends RecordNotFound {
 
   public ServiceOperatorNotFound(String trackId, String recordId) {
-    super(ServiceOperator.class.getName(), trackId, recordId);
+    super(ServiceOperator.class.getSimpleName(), trackId, recordId);
   }
 }

@@ -21,6 +21,6 @@ import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
 public class NetworkNotFound extends RecordNotFound {
 
   public NetworkNotFound(String trackId, String recordId) {
-    super(Network.class.getName(), trackId, recordId);
+    super(Network.class.getSimpleName(), trackId, recordId);
   }
 }

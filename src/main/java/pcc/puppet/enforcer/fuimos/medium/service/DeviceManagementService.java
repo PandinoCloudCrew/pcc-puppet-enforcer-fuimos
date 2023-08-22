@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.network.management.service;
+package pcc.puppet.enforcer.fuimos.medium.service;
 
-import pcc.puppet.enforcer.fuimos.network.management.command.NetworkCreateCommand;
-import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
-import pcc.puppet.enforcer.fuimos.network.management.event.NetworkCreatedEvent;
-import reactor.core.publisher.Flux;
+import pcc.puppet.enforcer.fuimos.medium.domain.Device;
 import reactor.core.publisher.Mono;
 
-public interface NetworkService {
-  Mono<NetworkCreatedEvent> create(NetworkCreateCommand command);
-
-  Mono<Network> findById(String trackId, String id);
-
-  Flux<NetworkCreatedEvent> getAllNetworks();
+public interface DeviceManagementService {
+  Mono<Device> create(String trackId, Device device);
+  Mono<Device> findByAddressAndType(String trackId, String address, String type);
 }

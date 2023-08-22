@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.common.error;
+package pcc.puppet.enforcer.fuimos.network.management.service;
 
-import pcc.puppet.enforcer.fuimos.provider.domain.ServiceConsumer;
+import pcc.puppet.enforcer.fuimos.network.management.command.NetworkCreateCommand;
+import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
+import pcc.puppet.enforcer.fuimos.network.management.event.NetworkCreatedEvent;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-public class ServiceConsumerNotFound extends RecordNotFound {
+public interface NetworkManagementService {
+  Mono<NetworkCreatedEvent> create(NetworkCreateCommand command);
 
-  public ServiceConsumerNotFound(String trackId, String recordId) {
-    super(ServiceConsumer.class.getSimpleName(), trackId, recordId);
-  }
+  Mono<Network> findById(String trackId, String id);
+
+  Flux<NetworkCreatedEvent> getAllNetworks();
 }

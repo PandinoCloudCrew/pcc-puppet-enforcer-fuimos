@@ -24,7 +24,7 @@ import pcc.puppet.enforcer.app.tools.Data;
 import pcc.puppet.enforcer.fuimos.common.error.ServiceOperatorNotFound;
 import pcc.puppet.enforcer.fuimos.network.management.domain.NetworkOperator;
 import pcc.puppet.enforcer.fuimos.network.management.ports.repository.NetworkOperatorRepository;
-import pcc.puppet.enforcer.fuimos.network.management.service.NetworkService;
+import pcc.puppet.enforcer.fuimos.network.management.service.NetworkManagementService;
 import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
 import pcc.puppet.enforcer.fuimos.provider.management.command.ServiceOperatorCreateCommand;
 import pcc.puppet.enforcer.fuimos.provider.management.event.ServiceOperatorCreatedEvent;
@@ -38,12 +38,12 @@ import reactor.core.publisher.Mono;
 public class DefaultOperatorManagementService implements OperatorManagementService {
   private final ServiceOperatorRepository operatorRepository;
   private final ServiceOperatorMapper operatorMapper;
-  private final NetworkService networkService;
+  private final NetworkManagementService networkManagementService;
   private final NetworkOperatorRepository networkOperatorRepository;
 
   @Override
   public Mono<ServiceOperatorCreatedEvent> create(ServiceOperatorCreateCommand command) {
-    return networkService
+    return networkManagementService
         .findById(command.getTrackId(), command.getNetworkId())
         .flatMap(
             network -> {

@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.common.error;
+package pcc.puppet.enforcer.fuimos.common;
 
-import pcc.puppet.enforcer.fuimos.provider.domain.ServiceConsumer;
+import lombok.experimental.UtilityClass;
 
-public class ServiceConsumerNotFound extends RecordNotFound {
-
-  public ServiceConsumerNotFound(String trackId, String recordId) {
-    super(ServiceConsumer.class.getSimpleName(), trackId, recordId);
-  }
+@UtilityClass
+public class PccHeaders {
+  public static final String TRACK_ID = "track-id";
+  public static final String X_ORG_ID = "X-Org-Id";
+  public static final String X_DEPT_ID = "X-Dept-Id";
+  public static final String X_MEMBER_ID = "X-Member-Id";
 }
