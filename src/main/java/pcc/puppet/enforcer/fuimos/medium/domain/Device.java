@@ -29,6 +29,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
@@ -39,14 +40,17 @@ import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
 @Document
 @Builder
 @Jacksonized
+@CompoundIndex(
+    background = true,
+    unique = true,
+    name = "address_type",
+    def = "{'address' : 1, 'type': 1}")
 public class Device implements Serializable {
 
   @Id @NotNull private String id;
   private String address;
   private DeviceType type;
   private String status;
-  @DocumentReference private Inbox inbox;
-  @DocumentReference private Outbox outbox;
   @DocumentReference private ServiceConsumer consumer;
   @DocumentReference private ServiceOperator operator;
   @DocumentReference private Network network;
