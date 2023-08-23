@@ -16,17 +16,40 @@
 
 package pcc.puppet.enforcer.fuimos.network.ingress.service;
 
+import java.time.Instant;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import pcc.puppet.enforcer.fuimos.adapters.http.OperatorIngressClient;
+import pcc.puppet.enforcer.fuimos.medium.ports.mapper.DeviceMapper;
+import pcc.puppet.enforcer.fuimos.medium.service.DeviceManagementService;
 import pcc.puppet.enforcer.fuimos.network.ingress.command.DeviceAuthenticateCommand;
 import pcc.puppet.enforcer.fuimos.network.ingress.event.DeviceAuthenticationEvent;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class DefaultOperatorAuthentication implements OperatorAuthentication {
+  private final DeviceManagementService deviceManagementService;
+  private final OperatorIngressClient ingressClient;
+  private final DeviceMapper deviceMapper;
 
   @Override
-  public DeviceAuthenticationEvent authenticate(DeviceAuthenticateCommand authenticateCommand) {
-    return null;
+  public Mono<DeviceAuthenticationEvent> authenticate(
+      String trackId, DeviceAuthenticateCommand command) {
+    return deviceManagementService
+        .findByAddressAndType(trackId, command.getAddress(), command.getType())
+        .flatMap(
+            device ->
+                ingressClient
+                    .authenticate(deviceMapper.toAuthenticateCommand(device))
+                    .map(
+                        authenticationEvent ->
+                            DeviceAuthenticationEvent.builder()
+                                .authenticationDate(Instant.now())
+                                .expirationDate(authenticationEvent.getExpirationDate())
+                                .token(authenticationEvent.getToken())
+                                .build()));
   }
 }

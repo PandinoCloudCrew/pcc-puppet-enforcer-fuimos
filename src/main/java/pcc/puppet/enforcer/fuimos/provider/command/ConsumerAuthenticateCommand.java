@@ -16,12 +16,19 @@
 
 package pcc.puppet.enforcer.fuimos.provider.command;
 
+import lombok.Builder;
 import lombok.Data;
+import lombok.extern.jackson.Jacksonized;
+import pcc.puppet.enforcer.fuimos.medium.domain.DeviceType;
 
 @Data
+@Builder
+@Jacksonized
 public class ConsumerAuthenticateCommand {
   private String deviceId;
   private String deviceAddress;
+  private DeviceType deviceType;
   private String networkId;
-  private String otp;
+  private String operatorId;
+  private String consumerId;
 }

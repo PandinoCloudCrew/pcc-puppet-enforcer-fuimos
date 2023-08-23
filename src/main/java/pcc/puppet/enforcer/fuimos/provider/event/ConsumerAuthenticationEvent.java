@@ -16,4 +16,16 @@
 
 package pcc.puppet.enforcer.fuimos.provider.event;
 
-public class ConsumerAuthenticationEvent {}
+import java.time.Instant;
+import lombok.Builder;
+import lombok.Data;
+import lombok.extern.jackson.Jacksonized;
+
+@Data
+@Builder
+@Jacksonized
+public class ConsumerAuthenticationEvent {
+  private String deviceId;
+  private String token;
+  private Instant expirationDate;
+}

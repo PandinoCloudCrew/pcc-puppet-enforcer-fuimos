@@ -14,6 +14,26 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.provider.service;
+package pcc.puppet.enforcer.app.configuration.http;
 
-public interface AuthenticationService {}
+import java.util.Objects;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
+@Data
+@Configuration
+@ConfigurationProperties(value = "spring.http.services")
+public class HttpServiceConfiguration {
+  private ServiceAttributes operatorIngress;
+
+  @Data
+  public static class ServiceAttributes {
+    private String url;
+    private String path;
+
+    public String getUri() {
+      return Objects.isNull(path) ? url : url.concat(path);
+    }
+  }
+}

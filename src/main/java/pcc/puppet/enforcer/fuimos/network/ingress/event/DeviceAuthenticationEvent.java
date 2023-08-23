@@ -16,7 +16,17 @@
 
 package pcc.puppet.enforcer.fuimos.network.ingress.event;
 
+import java.time.Instant;
+import lombok.Builder;
 import lombok.Data;
+import lombok.extern.jackson.Jacksonized;
 
 @Data
-public class DeviceAuthenticationEvent {}
+@Builder
+@Jacksonized
+public class DeviceAuthenticationEvent {
+
+  private String token;
+  private Instant authenticationDate;
+  private Instant expirationDate;
+}

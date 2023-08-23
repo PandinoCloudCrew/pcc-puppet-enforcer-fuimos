@@ -14,12 +14,33 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.network.ingress.command;
+package pcc.puppet.enforcer.keycloak.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Data;
+import lombok.extern.jackson.Jacksonized;
 
 @Data
-public class DeviceAuthenticateCommand {
-  private String address;
-  private String type;
+@Builder
+@Jacksonized
+public class BearerTokenResponse {
+
+  @JsonProperty("access_token")
+  private String accessToken;
+
+  @JsonProperty("expires_in")
+  private int expiresIn;
+
+  @JsonProperty("refresh_expires_in")
+  private int refreshExpiresIn;
+
+  @JsonProperty("token_type")
+  private String tokenType;
+
+  @JsonProperty("not-before-policy")
+  private String notBeforePolicy;
+
+  @JsonProperty("scope")
+  private String scope;
 }

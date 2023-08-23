@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.network.ingress.command;
+package pcc.puppet.enforcer.fuimos.provider.service;
 
-import lombok.Data;
+import pcc.puppet.enforcer.fuimos.provider.command.ConsumerAuthenticateCommand;
+import pcc.puppet.enforcer.fuimos.provider.event.ConsumerAuthenticationEvent;
+import reactor.core.publisher.Mono;
 
-@Data
-public class DeviceAuthenticateCommand {
-  private String address;
-  private String type;
+public interface OperatorAuthenticationService {
+
+  Mono<ConsumerAuthenticationEvent> authenticate(
+      String trackId, ConsumerAuthenticateCommand command);
 }
