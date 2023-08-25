@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.network.ingress.ports;
+package pcc.puppet.enforcer.fuimos.common.error;
 
-import pcc.puppet.enforcer.fuimos.network.ingress.command.MessageSendCommand;
-import pcc.puppet.enforcer.fuimos.network.ingress.event.MessageSentEvent;
+import pcc.puppet.enforcer.fuimos.network.ingress.domain.DeviceAuthentication;
 
-public interface MessagePendingQueue {
-  MessageSentEvent accept(MessageSendCommand message);
+public class DeviceAuthenticationDenied extends AccessDenied {
+
+  public DeviceAuthenticationDenied(String trackId, String token) {
+    super(DeviceAuthentication.class.getSimpleName(), trackId, token);
+  }
 }

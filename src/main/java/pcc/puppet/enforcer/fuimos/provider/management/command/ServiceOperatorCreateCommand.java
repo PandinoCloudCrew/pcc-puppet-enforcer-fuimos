@@ -23,7 +23,6 @@ import pcc.puppet.enforcer.fuimos.network.management.domain.ServiceType;
 @Data
 public class ServiceOperatorCreateCommand {
   @NotNull private String name;
-  @NotNull private String trackId;
   @NotNull private ServiceType type;
   @NotNull private String networkId;
 }

@@ -35,7 +35,7 @@ import reactor.core.publisher.Mono;
 public interface OperatorIngressClient {
   String USER_AGENT = "OperatorIngressClient/" + Project.VERSION + " (" + Project.NAME + ")";
 
-  @PostExchange
+  @PostExchange("/authenticate")
   Mono<ConsumerAuthenticationEvent> authenticate(
       @NotNull @RequestHeader(HttpHeaders.USER_AGENT) String userAgent,
       @NotNull @RequestHeader(AUTHORIZATION) String authorization,

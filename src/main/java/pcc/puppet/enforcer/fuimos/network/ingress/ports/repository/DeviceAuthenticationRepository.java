@@ -14,21 +14,12 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.network.ingress.event;
+package pcc.puppet.enforcer.fuimos.network.ingress.ports.repository;
 
-import java.time.Instant;
-import javax.validation.constraints.NotNull;
-import lombok.Builder;
-import lombok.Data;
-import lombok.extern.jackson.Jacksonized;
-import pcc.puppet.enforcer.fuimos.network.management.domain.OperatorQueue;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.stereotype.Repository;
+import pcc.puppet.enforcer.fuimos.network.ingress.domain.DeviceAuthentication;
 
-@Data
-@Builder
-@Jacksonized
-public class MessageSentEvent {
-  @NotNull private String id;
-  @NotNull private String trackId;
-  private OperatorQueue queue;
-  private Instant createDate;
-}
+@Repository
+public interface DeviceAuthenticationRepository
+    extends ReactiveCrudRepository<DeviceAuthentication, String> {}

@@ -23,6 +23,7 @@ import pcc.puppet.enforcer.fuimos.medium.domain.Device;
 import pcc.puppet.enforcer.fuimos.network.ingress.command.DeviceRegisterCommand;
 import pcc.puppet.enforcer.fuimos.network.ingress.event.DeviceRegistrationEvent;
 import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
+import pcc.puppet.enforcer.fuimos.provider.command.ConsumerAuthenticateCommand;
 import pcc.puppet.enforcer.fuimos.provider.domain.ServiceConsumer;
 import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
 import reactor.util.function.Tuple2;
@@ -35,6 +36,17 @@ public interface DeviceMapper {
     device.setConsumer(tuple.getT1().getT1());
     device.setOperator(tuple.getT1().getT2());
     device.setNetwork(tuple.getT2());
+  }
+
+  default ConsumerAuthenticateCommand toAuthenticateCommand(Device device) {
+    return ConsumerAuthenticateCommand.builder()
+        .deviceId(device.getId())
+        .deviceAddress(device.getAddress())
+        .deviceType(device.getType())
+        .consumerId(device.getConsumer().getId())
+        .networkId(device.getNetwork().getId())
+        .operatorId(device.getOperator().getId())
+        .build();
   }
 
   default Device fromCommand(DeviceRegisterCommand command) {

@@ -16,17 +16,24 @@
 
 package pcc.puppet.enforcer.fuimos.provider.management.ports.api;
 
+import static pcc.puppet.enforcer.fuimos.common.PccHeaders.TRACK_ID;
+
+import jakarta.validation.constraints.NotNull;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
 import pcc.puppet.enforcer.fuimos.provider.management.command.ServiceOperatorCreateCommand;
 import pcc.puppet.enforcer.fuimos.provider.management.event.ServiceOperatorCreatedEvent;
 import pcc.puppet.enforcer.fuimos.provider.management.service.OperatorManagementService;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -39,7 +46,13 @@ public class OperatorManagementController {
 
   @PostMapping
   public Mono<ServiceOperatorCreatedEvent> create(
+      @NotNull @RequestHeader(TRACK_ID) String trackId,
       @Valid @RequestBody ServiceOperatorCreateCommand command) {
-    return managementService.create(command);
+    return managementService.create(trackId, command);
+  }
+
+  @GetMapping
+  public Flux<ServiceOperator> getAll(@NotNull @RequestHeader(TRACK_ID) String trackId) {
+    return managementService.findAll(trackId);
   }
 }

@@ -17,18 +17,28 @@
 package pcc.puppet.enforcer.fuimos.network.ingress.command;
 
 import java.time.Instant;
+import javax.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
-import pcc.puppet.enforcer.fuimos.destination.ReceiverDevice;
-import pcc.puppet.enforcer.fuimos.medium.Message;
-import pcc.puppet.enforcer.fuimos.network.domain.ServiceType;
-import pcc.puppet.enforcer.fuimos.origination.domain.SenderDevice;
+import lombok.extern.jackson.Jacksonized;
+import pcc.puppet.enforcer.fuimos.medium.domain.DeviceType;
+import pcc.puppet.enforcer.fuimos.medium.domain.Message;
+import pcc.puppet.enforcer.fuimos.network.management.domain.DeliveryPriority;
+import pcc.puppet.enforcer.fuimos.network.management.domain.ServiceType;
 
 @Data
+@Builder
+@Jacksonized
 public class MessageSendCommand {
-  private String id;
+  @NotNull private String id;
+  @NotNull private String trackId;
+  private String senderToken;
   private ServiceType type;
-  private SenderDevice source;
-  private ReceiverDevice destination;
+  private DeliveryPriority priority;
+  private String senderAddress;
+  private DeviceType senderType;
+  private String receiverAddress;
+  private DeviceType receiverType;
   private Message message;
   private Instant createDate;
 }

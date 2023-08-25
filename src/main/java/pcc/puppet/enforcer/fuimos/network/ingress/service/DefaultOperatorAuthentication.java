@@ -16,7 +16,6 @@
 
 package pcc.puppet.enforcer.fuimos.network.ingress.service;
 
-import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -44,12 +43,8 @@ public class DefaultOperatorAuthentication implements OperatorAuthentication {
             device ->
                 ingressClient
                     .authenticate(deviceMapper.toAuthenticateCommand(device))
-                    .map(
+                    .flatMap(
                         authenticationEvent ->
-                            DeviceAuthenticationEvent.builder()
-                                .authenticationDate(Instant.now())
-                                .expirationDate(authenticationEvent.getExpirationDate())
-                                .token(authenticationEvent.getToken())
-                                .build()));
+                            deviceManagementService.saveDeviceToken(device, authenticationEvent)));
   }
 }

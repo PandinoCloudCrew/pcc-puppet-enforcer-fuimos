@@ -41,6 +41,8 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import pcc.puppet.enforcer.app.error.response.ClientErrorResponse;
 import pcc.puppet.enforcer.app.error.response.FieldValidationResponse;
+import pcc.puppet.enforcer.app.error.response.NotFoundResponse;
+import pcc.puppet.enforcer.fuimos.common.error.RecordNotFound;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -86,6 +88,9 @@ public class ReactiveExceptionHandler extends AbstractErrorWebExceptionHandler {
     } else if (error instanceof IllegalStateException ex) {
       httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
       return getServerResponse(error, httpStatus, ex.getMessage());
+    } else if (error instanceof RecordNotFound ex) {
+      httpStatus = HttpStatus.NOT_FOUND;
+      return getServerResponse(httpStatus, new NotFoundResponse(ex));
     } else if (error instanceof Exception) {
       httpStatus = defaultStatus;
       log.error("failed to handle error", error);

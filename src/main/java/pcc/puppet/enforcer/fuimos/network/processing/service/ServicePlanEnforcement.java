@@ -16,8 +16,8 @@
 
 package pcc.puppet.enforcer.fuimos.network.processing.service;
 
-import pcc.puppet.enforcer.fuimos.network.domain.ServicePlan;
 import pcc.puppet.enforcer.fuimos.network.ingress.command.MessageSendCommand;
+import pcc.puppet.enforcer.fuimos.network.management.domain.ServicePlan;
 import pcc.puppet.enforcer.fuimos.network.processing.command.MessageDeliverCommand;
 
 public interface ServicePlanEnforcement {

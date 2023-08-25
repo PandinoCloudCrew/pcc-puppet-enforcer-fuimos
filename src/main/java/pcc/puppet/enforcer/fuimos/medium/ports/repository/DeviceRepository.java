@@ -19,9 +19,10 @@ package pcc.puppet.enforcer.fuimos.medium.ports.repository;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 import pcc.puppet.enforcer.fuimos.medium.domain.Device;
+import pcc.puppet.enforcer.fuimos.medium.domain.DeviceType;
 import reactor.core.publisher.Mono;
 
 @Repository
 public interface DeviceRepository extends ReactiveCrudRepository<Device, String> {
-  Mono<Device> findByAddressAndType(String address, String type);
+  Mono<Device> findByAddressAndType(String address, DeviceType type);
 }

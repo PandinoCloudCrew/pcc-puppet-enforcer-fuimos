@@ -30,6 +30,7 @@ import pcc.puppet.enforcer.fuimos.provider.management.command.ServiceOperatorCre
 import pcc.puppet.enforcer.fuimos.provider.management.event.ServiceOperatorCreatedEvent;
 import pcc.puppet.enforcer.fuimos.provider.management.ports.mapper.ServiceOperatorMapper;
 import pcc.puppet.enforcer.fuimos.provider.management.ports.repository.ServiceOperatorRepository;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -42,9 +43,10 @@ public class DefaultOperatorManagementService implements OperatorManagementServi
   private final NetworkOperatorRepository networkOperatorRepository;
 
   @Override
-  public Mono<ServiceOperatorCreatedEvent> create(ServiceOperatorCreateCommand command) {
+  public Mono<ServiceOperatorCreatedEvent> create(
+      String trackId, ServiceOperatorCreateCommand command) {
     return networkManagementService
-        .findById(command.getTrackId(), command.getNetworkId())
+        .findById(trackId, command.getNetworkId())
         .flatMap(
             network -> {
               ServiceOperator operator =
@@ -77,6 +79,22 @@ public class DefaultOperatorManagementService implements OperatorManagementServi
   public Mono<ServiceOperator> findById(String trackId, String id) {
     return operatorRepository
         .findById(id)
+        .flatMap(
+            operator ->
+                networkManagementService
+                    .findById(trackId, operator.getNetwork().getId())
+                    .map(operator::setNetwork))
         .switchIfEmpty(Mono.error(new ServiceOperatorNotFound(trackId, id)));
+  }
+
+  @Override
+  public Flux<ServiceOperator> findAll(String trackId) {
+    return operatorRepository
+        .findAll()
+        .flatMap(
+            operator ->
+                networkManagementService
+                    .findById(trackId, operator.getNetwork().getId())
+                    .map(operator::setNetwork));
   }
 }

@@ -14,21 +14,12 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.network.ingress.event;
+package pcc.puppet.enforcer.fuimos.network.ingress.ports.queue;
 
-import java.time.Instant;
-import javax.validation.constraints.NotNull;
-import lombok.Builder;
-import lombok.Data;
-import lombok.extern.jackson.Jacksonized;
-import pcc.puppet.enforcer.fuimos.network.management.domain.OperatorQueue;
+import pcc.puppet.enforcer.fuimos.network.ingress.command.MessageSendCommand;
+import pcc.puppet.enforcer.fuimos.network.ingress.event.MessageSentEvent;
+import reactor.core.publisher.Mono;
 
-@Data
-@Builder
-@Jacksonized
-public class MessageSentEvent {
-  @NotNull private String id;
-  @NotNull private String trackId;
-  private OperatorQueue queue;
-  private Instant createDate;
+public interface MessagePendingQueue {
+  Mono<MessageSentEvent> accept(String trackId, MessageSendCommand message);
 }

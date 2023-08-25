@@ -24,10 +24,12 @@ import lombok.EqualsAndHashCode;
 public class RecordNotFound extends Exception {
   private final String trackId;
   private final String recordId;
+  private final String entity;
 
-  public RecordNotFound(String clazz, String trackId, String recordId) {
-    super(String.format("(%s) %s with id (%s) not found", trackId, clazz, recordId));
+  public RecordNotFound(String entity, String trackId, String recordId) {
+    super(String.format("(%s) %s with id (%s) not found", trackId, entity, recordId));
     this.trackId = trackId;
+    this.entity = entity;
     this.recordId = recordId;
   }
 }

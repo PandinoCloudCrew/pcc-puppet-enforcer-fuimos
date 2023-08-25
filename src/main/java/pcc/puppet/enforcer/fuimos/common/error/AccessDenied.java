@@ -16,20 +16,21 @@
 
 package pcc.puppet.enforcer.fuimos.common.error;
 
-import pcc.puppet.enforcer.app.tools.Mask;
-import pcc.puppet.enforcer.fuimos.medium.domain.Device;
-import pcc.puppet.enforcer.fuimos.medium.domain.DeviceType;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import org.springframework.security.access.AccessDeniedException;
 
-public class DeviceNotFound extends RecordNotFound {
+@Getter
+@EqualsAndHashCode(callSuper = true)
+public class AccessDenied extends AccessDeniedException {
+  private final String trackId;
+  private final String recordId;
+  private final String entity;
 
-  public DeviceNotFound(String trackId, String recordId) {
-    super(Device.class.getSimpleName(), trackId, recordId);
-  }
-
-  public DeviceNotFound(String trackId, String address, DeviceType type) {
-    super(
-        Device.class.getSimpleName(),
-        trackId,
-        String.format("%s::%s", type, Mask.lastThree(address)));
+  public AccessDenied(String entity, String trackId, String recordId) {
+    super("(%s) %s with id (%s) is not authorized".formatted(trackId, entity, recordId));
+    this.trackId = trackId;
+    this.entity = entity;
+    this.recordId = recordId;
   }
 }

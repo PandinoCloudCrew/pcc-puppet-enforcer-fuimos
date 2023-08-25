@@ -30,8 +30,6 @@ public interface OperatorQueueMapper {
         .trackId(message.getTrackId())
         .type(message.getType())
         .priority(message.getPriority())
-        .operator(message.getSender().getOperator())
-        .network(message.getSender().getNetwork())
         .createDate(Data.now())
         .build();
   }

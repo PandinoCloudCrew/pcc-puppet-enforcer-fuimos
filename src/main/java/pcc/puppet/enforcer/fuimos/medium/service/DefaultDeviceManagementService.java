@@ -16,13 +16,20 @@
 
 package pcc.puppet.enforcer.fuimos.medium.service;
 
+import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pcc.puppet.enforcer.app.tools.Mask;
+import pcc.puppet.enforcer.fuimos.common.error.DeviceAuthenticationDenied;
 import pcc.puppet.enforcer.fuimos.common.error.DeviceNotFound;
 import pcc.puppet.enforcer.fuimos.medium.domain.Device;
+import pcc.puppet.enforcer.fuimos.medium.domain.DeviceType;
 import pcc.puppet.enforcer.fuimos.medium.ports.repository.DeviceRepository;
+import pcc.puppet.enforcer.fuimos.network.ingress.domain.DeviceAuthentication;
+import pcc.puppet.enforcer.fuimos.network.ingress.event.DeviceAuthenticationEvent;
+import pcc.puppet.enforcer.fuimos.network.ingress.ports.repository.DeviceAuthenticationRepository;
+import pcc.puppet.enforcer.fuimos.provider.event.ConsumerAuthenticationEvent;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -30,6 +37,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class DefaultDeviceManagementService implements DeviceManagementService {
   private final DeviceRepository deviceRepository;
+  private final DeviceAuthenticationRepository deviceAuthenticationRepository;
 
   @Override
   public Mono<Device> create(String trackId, Device device) {
@@ -42,9 +50,36 @@ public class DefaultDeviceManagementService implements DeviceManagementService {
   }
 
   @Override
-  public Mono<Device> findByAddressAndType(String trackId, String address, String type) {
+  public Mono<Device> findByAddressAndType(String trackId, String address, DeviceType type) {
     return deviceRepository
         .findByAddressAndType(address, type)
         .switchIfEmpty(Mono.error(new DeviceNotFound(trackId, address, type)));
+  }
+
+  @Override
+  public Mono<DeviceAuthenticationEvent> saveDeviceToken(
+      Device device, ConsumerAuthenticationEvent registrationEvent) {
+    DeviceAuthentication deviceAuthentication =
+        DeviceAuthentication.builder()
+            .token(registrationEvent.getToken())
+            .expirationDate(registrationEvent.getExpirationDate())
+            .device(device)
+            .build();
+    return deviceAuthenticationRepository
+        .save(deviceAuthentication)
+        .map(
+            entity ->
+                DeviceAuthenticationEvent.builder()
+                    .authenticationDate(Instant.now())
+                    .expirationDate(entity.getExpirationDate())
+                    .token(entity.getToken())
+                    .build());
+  }
+
+  @Override
+  public Mono<DeviceAuthentication> findByToken(String trackId, String token) {
+    return deviceAuthenticationRepository
+        .findById(token)
+        .switchIfEmpty(Mono.error(new DeviceAuthenticationDenied(trackId, token)));
   }
 }

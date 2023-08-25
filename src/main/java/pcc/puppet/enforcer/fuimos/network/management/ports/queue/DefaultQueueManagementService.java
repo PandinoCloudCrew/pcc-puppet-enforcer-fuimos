@@ -21,8 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pcc.puppet.enforcer.fuimos.network.ingress.adapters.repository.OperatorQueueRepository;
 import pcc.puppet.enforcer.fuimos.network.ingress.command.MessageSendCommand;
+import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
 import pcc.puppet.enforcer.fuimos.network.management.domain.OperatorQueue;
 import pcc.puppet.enforcer.fuimos.network.management.ports.mapper.OperatorQueueMapper;
+import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -33,15 +35,15 @@ public class DefaultQueueManagementService implements QueueManagementService {
   private final OperatorQueueMapper operatorQueueMapper;
 
   @Override
-  public Mono<OperatorQueue> create(MessageSendCommand message) {
+  public Mono<OperatorQueue> create(
+      ServiceOperator operator, Network network, MessageSendCommand message) {
     OperatorQueue queue = operatorQueueMapper.fromCommand(message);
+    queue.setOperator(operator);
+    queue.setNetwork(network);
     queue.setName(
         String.format(
             "%s-%s-%s-%s",
-            queue.getNetwork().getId(),
-            queue.getType(),
-            queue.getOperator().getId(),
-            queue.getPriority()));
+            network.getId(), queue.getType(), operator.getId(), queue.getPriority()));
     return operatorQueueRepository
         .findByName(queue.getName())
         .switchIfEmpty(operatorQueueRepository.save(queue));

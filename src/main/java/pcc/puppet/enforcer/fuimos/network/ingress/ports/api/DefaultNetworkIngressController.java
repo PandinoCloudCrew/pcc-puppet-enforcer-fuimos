@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.network.ingress.ports;
+package pcc.puppet.enforcer.fuimos.network.ingress.ports.api;
+
+import static pcc.puppet.enforcer.fuimos.common.PccHeaders.DEVICE_TOKEN;
+import static pcc.puppet.enforcer.fuimos.common.PccHeaders.TRACK_ID;
 
 import jakarta.validation.constraints.NotNull;
 import javax.validation.Valid;
@@ -32,6 +35,7 @@ import pcc.puppet.enforcer.fuimos.network.ingress.command.MessageSendCommand;
 import pcc.puppet.enforcer.fuimos.network.ingress.event.DeviceAuthenticationEvent;
 import pcc.puppet.enforcer.fuimos.network.ingress.event.DeviceRegistrationEvent;
 import pcc.puppet.enforcer.fuimos.network.ingress.event.MessageSentEvent;
+import pcc.puppet.enforcer.fuimos.network.ingress.ports.queue.MessagePendingQueue;
 import pcc.puppet.enforcer.fuimos.network.ingress.service.NetworkAuthentication;
 import pcc.puppet.enforcer.fuimos.network.ingress.service.OperatorAuthentication;
 import reactor.core.publisher.Mono;
@@ -48,19 +52,24 @@ public class DefaultNetworkIngressController {
   private final MessagePendingQueue messagePendingQueue;
 
   @PostMapping("send")
-  public Mono<MessageSentEvent> send(@Valid @RequestBody MessageSendCommand message) {
-    return messagePendingQueue.accept(message);
+  public Mono<MessageSentEvent> send(
+      @NotNull @RequestHeader(TRACK_ID) String trackId,
+      @NotNull @RequestHeader(DEVICE_TOKEN) String deviceToken,
+      @Valid @RequestBody MessageSendCommand command) {
+    command.setSenderToken(deviceToken);
+    return messagePendingQueue.accept(trackId, command);
   }
 
   @PostMapping("authenticate")
   public Mono<DeviceAuthenticationEvent> authenticate(
+      @NotNull @RequestHeader(TRACK_ID) String trackId,
       @Valid @RequestBody DeviceAuthenticateCommand command) {
-    return operatorAuthentication.authenticate(command);
+    return operatorAuthentication.authenticate(trackId, command);
   }
 
   @PostMapping("join")
   public Mono<DeviceRegistrationEvent> join(
-      @NotNull @RequestHeader("track-id") String trackId,
+      @NotNull @RequestHeader(TRACK_ID) String trackId,
       @Valid @RequestBody DeviceRegisterCommand command) {
     log.info("create device {}", command);
     return networkAuthentication.register(trackId, command);

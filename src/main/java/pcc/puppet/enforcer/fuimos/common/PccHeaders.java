@@ -21,6 +21,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class PccHeaders {
   public static final String TRACK_ID = "track-id";
+  public static final String DEVICE_TOKEN = "dev-token";
   public static final String X_ORG_ID = "X-Org-Id";
   public static final String X_DEPT_ID = "X-Dept-Id";
   public static final String X_MEMBER_ID = "X-Member-Id";

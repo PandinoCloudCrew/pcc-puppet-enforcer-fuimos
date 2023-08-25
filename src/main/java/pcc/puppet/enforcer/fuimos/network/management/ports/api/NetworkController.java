@@ -16,6 +16,8 @@
 
 package pcc.puppet.enforcer.fuimos.network.management.ports.api;
 
+import static pcc.puppet.enforcer.fuimos.common.PccHeaders.TRACK_ID;
+
 import jakarta.validation.constraints.NotNull;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -41,13 +43,13 @@ public class NetworkController {
 
   @PostMapping
   public Mono<NetworkCreatedEvent> create(
-      @NotNull @RequestHeader("track-id") String trackId,
+      @NotNull @RequestHeader(TRACK_ID) String trackId,
       @Valid @RequestBody NetworkCreateCommand command) {
     return networkManagementService.create(command);
   }
 
   @GetMapping
-  public Flux<NetworkCreatedEvent> getAll(@NotNull @RequestHeader("track-id") String trackId) {
+  public Flux<NetworkCreatedEvent> getAll(@NotNull @RequestHeader(TRACK_ID) String trackId) {
     return networkManagementService.getAllNetworks();
   }
 }

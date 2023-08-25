@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.medium;
+package pcc.puppet.enforcer.fuimos.medium.domain;
 
-import java.time.Instant;
-import java.util.Map;
-import lombok.Data;
-import pcc.puppet.enforcer.fuimos.network.domain.ServiceType;
-
-@Data
-public class Message {
-
-  private String id;
-  private String content;
-  private String contentType;
-  private ServiceType type;
-  private int size;
-  private Map<String, String> headers;
-  private Instant createDate;
+public enum MessageContentType {
+  HTML,
+  HTML_TMPL,
+  TEXT,
+  TEXT_TMPL,
+  SVG,
+  SVG_TMPL,
+  JSON,
+  JSON_TMPL
 }

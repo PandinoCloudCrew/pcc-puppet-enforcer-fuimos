@@ -17,9 +17,19 @@
 package pcc.puppet.enforcer.fuimos.medium.service;
 
 import pcc.puppet.enforcer.fuimos.medium.domain.Device;
+import pcc.puppet.enforcer.fuimos.medium.domain.DeviceType;
+import pcc.puppet.enforcer.fuimos.network.ingress.domain.DeviceAuthentication;
+import pcc.puppet.enforcer.fuimos.network.ingress.event.DeviceAuthenticationEvent;
+import pcc.puppet.enforcer.fuimos.provider.event.ConsumerAuthenticationEvent;
 import reactor.core.publisher.Mono;
 
 public interface DeviceManagementService {
   Mono<Device> create(String trackId, Device device);
-  Mono<Device> findByAddressAndType(String trackId, String address, String type);
+
+  Mono<Device> findByAddressAndType(String trackId, String address, DeviceType type);
+
+  Mono<DeviceAuthenticationEvent> saveDeviceToken(
+      Device device, ConsumerAuthenticationEvent registrationEvent);
+
+  Mono<DeviceAuthentication> findByToken(String trackId, String token);
 }

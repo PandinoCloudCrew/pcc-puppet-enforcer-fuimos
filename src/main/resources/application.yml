@@ -23,10 +23,9 @@ spring:
     oauth2:
       resourceserver:
         jwk:
-          jwk-set-uri: ${provider-keycloak-url}/realms/${keycloak-realm}/.well-known/openid-configuration
           issuer-uri: ${provider-keycloak-url}/realms/${keycloak-realm}
         jwt:
-          issuer: ${provider-keycloak-url}/realms/${keycloak-realm}
+          issuer-uri: ${provider-keycloak-url}/realms/${keycloak-realm}
 
 logging:
   pattern:

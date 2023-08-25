@@ -51,4 +51,9 @@ public class ServiceOperator implements Serializable {
   @Nullable @LastModifiedBy private String updatedBy;
   @Nullable @LastModifiedDate private Instant updatedAt;
   @Version private Integer version;
+
+  public ServiceOperator setNetwork(Network network) {
+    this.network = network;
+    return this;
+  }
 }

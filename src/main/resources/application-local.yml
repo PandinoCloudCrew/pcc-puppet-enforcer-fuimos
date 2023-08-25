@@ -1,13 +1,17 @@
 spring:
+  http:
+    services:
+      operator-ingress:
+        url: http://localhost:9900
+        path: /operator
+  data:
+    mongodb:
+      auto-index-creation: true
+      uri: ${mongo-uri}
   cloud:
-    function:
-      definition: testConsumer
     stream:
       bindings:
         testTopic-out-0:
-          destination: test
-          group: local
-        testConsumer-in-0:
           destination: test
           group: local
       kafka:
