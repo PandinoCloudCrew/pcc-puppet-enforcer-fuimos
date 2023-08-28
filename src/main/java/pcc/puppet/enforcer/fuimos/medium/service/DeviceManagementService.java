@@ -21,7 +21,7 @@ import pcc.puppet.enforcer.fuimos.medium.domain.Device;
 import pcc.puppet.enforcer.fuimos.medium.domain.DeviceType;
 import pcc.puppet.enforcer.fuimos.network.ingress.domain.DeviceAuthentication;
 import pcc.puppet.enforcer.fuimos.network.ingress.event.DeviceAuthenticationEvent;
-import pcc.puppet.enforcer.fuimos.provider.event.ConsumerAuthenticationEvent;
+import pcc.puppet.enforcer.fuimos.provider.ingress.event.ConsumerAuthenticationEvent;
 
 public interface DeviceManagementService {
   Device create(String trackId, Device device);

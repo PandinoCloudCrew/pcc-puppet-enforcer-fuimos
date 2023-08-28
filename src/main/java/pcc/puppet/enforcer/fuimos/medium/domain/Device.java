@@ -33,8 +33,8 @@ import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
-import pcc.puppet.enforcer.fuimos.provider.domain.ServiceConsumer;
-import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
+import pcc.puppet.enforcer.fuimos.provider.management.domain.ServiceConsumer;
+import pcc.puppet.enforcer.fuimos.provider.management.domain.ServiceOperator;
 
 @Data
 @Document

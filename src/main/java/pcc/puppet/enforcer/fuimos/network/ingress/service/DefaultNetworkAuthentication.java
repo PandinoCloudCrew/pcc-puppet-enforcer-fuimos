@@ -31,10 +31,10 @@ import pcc.puppet.enforcer.fuimos.network.ingress.event.DeviceAuthenticationEven
 import pcc.puppet.enforcer.fuimos.network.ingress.event.DeviceRegistrationEvent;
 import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
 import pcc.puppet.enforcer.fuimos.network.management.service.NetworkManagementService;
-import pcc.puppet.enforcer.fuimos.provider.domain.ServiceConsumer;
-import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
+import pcc.puppet.enforcer.fuimos.provider.management.domain.ServiceConsumer;
+import pcc.puppet.enforcer.fuimos.provider.management.domain.ServiceOperator;
 import pcc.puppet.enforcer.fuimos.provider.management.service.OperatorManagementService;
-import pcc.puppet.enforcer.fuimos.provider.service.ConsumerManagementService;
+import pcc.puppet.enforcer.fuimos.provider.management.service.ConsumerManagementService;
 
 @Slf4j
 @Service

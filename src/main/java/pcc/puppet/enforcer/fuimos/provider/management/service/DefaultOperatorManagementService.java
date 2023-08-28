@@ -26,13 +26,13 @@ import pcc.puppet.enforcer.fuimos.common.error.NetworkNotFound;
 import pcc.puppet.enforcer.fuimos.common.error.ServiceOperatorNotFound;
 import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
 import pcc.puppet.enforcer.fuimos.network.management.domain.NetworkOperator;
-import pcc.puppet.enforcer.fuimos.network.management.ports.repository.NetworkOperatorRepository;
+import pcc.puppet.enforcer.fuimos.network.management.adapters.repository.NetworkOperatorRepository;
 import pcc.puppet.enforcer.fuimos.network.management.service.NetworkManagementService;
-import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
+import pcc.puppet.enforcer.fuimos.provider.management.domain.ServiceOperator;
 import pcc.puppet.enforcer.fuimos.provider.management.command.ServiceOperatorCreateCommand;
 import pcc.puppet.enforcer.fuimos.provider.management.event.ServiceOperatorCreatedEvent;
 import pcc.puppet.enforcer.fuimos.provider.management.ports.mapper.ServiceOperatorMapper;
-import pcc.puppet.enforcer.fuimos.provider.management.ports.repository.ServiceOperatorRepository;
+import pcc.puppet.enforcer.fuimos.provider.management.adapters.repository.ServiceOperatorRepository;
 
 @Slf4j
 @Service

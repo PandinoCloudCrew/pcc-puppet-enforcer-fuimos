@@ -16,7 +16,7 @@
 
 package pcc.puppet.enforcer.fuimos.common.error;
 
-import pcc.puppet.enforcer.fuimos.provider.domain.ServiceConsumer;
+import pcc.puppet.enforcer.fuimos.provider.management.domain.ServiceConsumer;
 
 public class ServiceConsumerNotFound extends RecordNotFound {
 

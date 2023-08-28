@@ -27,7 +27,7 @@ import pcc.puppet.enforcer.fuimos.network.management.command.NetworkCreateComman
 import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
 import pcc.puppet.enforcer.fuimos.network.management.event.NetworkCreatedEvent;
 import pcc.puppet.enforcer.fuimos.network.management.ports.mapper.NetworkMapper;
-import pcc.puppet.enforcer.fuimos.network.management.ports.repository.NetworkRepository;
+import pcc.puppet.enforcer.fuimos.network.management.adapters.repository.NetworkRepository;
 
 @Slf4j
 @Service

@@ -43,10 +43,10 @@ public class DefaultMessagePendingQueue implements MessagePendingQueue {
         deviceManagementService.findByToken(trackId, message.getSenderToken());
     OperatorQueue operatorQueue =
         queueManagementService.create(
+            trackId,
             deviceAuthentication.getDevice().getOperator(),
             deviceAuthentication.getDevice().getNetwork(),
             message);
-    message.setTrackId(trackId);
     streamBridge.send(operatorQueue.getName(), message);
     return MessageSentEvent.builder()
         .id(Data.id())

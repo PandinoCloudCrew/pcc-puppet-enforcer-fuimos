@@ -25,11 +25,11 @@ import pcc.puppet.enforcer.fuimos.common.error.DeviceAuthenticationDenied;
 import pcc.puppet.enforcer.fuimos.common.error.DeviceNotFound;
 import pcc.puppet.enforcer.fuimos.medium.domain.Device;
 import pcc.puppet.enforcer.fuimos.medium.domain.DeviceType;
-import pcc.puppet.enforcer.fuimos.medium.ports.repository.DeviceRepository;
+import pcc.puppet.enforcer.fuimos.medium.adapters.repository.DeviceRepository;
 import pcc.puppet.enforcer.fuimos.network.ingress.domain.DeviceAuthentication;
 import pcc.puppet.enforcer.fuimos.network.ingress.event.DeviceAuthenticationEvent;
-import pcc.puppet.enforcer.fuimos.network.ingress.ports.repository.DeviceAuthenticationRepository;
-import pcc.puppet.enforcer.fuimos.provider.event.ConsumerAuthenticationEvent;
+import pcc.puppet.enforcer.fuimos.network.ingress.adapters.repository.DeviceAuthenticationRepository;
+import pcc.puppet.enforcer.fuimos.provider.ingress.event.ConsumerAuthenticationEvent;
 
 @Slf4j
 @Service

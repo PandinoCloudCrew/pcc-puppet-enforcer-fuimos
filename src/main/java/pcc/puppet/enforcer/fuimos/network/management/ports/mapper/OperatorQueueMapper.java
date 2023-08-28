@@ -27,7 +27,6 @@ public interface OperatorQueueMapper {
   default OperatorQueue fromCommand(MessageSendCommand message) {
     return OperatorQueue.builder()
         .id(Data.id())
-        .trackId(message.getTrackId())
         .type(message.getType())
         .priority(message.getPriority())
         .createDate(Data.now())

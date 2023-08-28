@@ -22,7 +22,7 @@ import pcc.puppet.enforcer.app.tools.Data;
 import pcc.puppet.enforcer.fuimos.medium.domain.Device;
 import pcc.puppet.enforcer.fuimos.network.ingress.command.DeviceRegisterCommand;
 import pcc.puppet.enforcer.fuimos.network.ingress.event.DeviceRegistrationEvent;
-import pcc.puppet.enforcer.fuimos.provider.command.ConsumerAuthenticateCommand;
+import pcc.puppet.enforcer.fuimos.provider.ingress.command.ConsumerAuthenticateCommand;
 
 @Mapper(componentModel = ComponentModel.SPRING)
 public interface DeviceMapper {

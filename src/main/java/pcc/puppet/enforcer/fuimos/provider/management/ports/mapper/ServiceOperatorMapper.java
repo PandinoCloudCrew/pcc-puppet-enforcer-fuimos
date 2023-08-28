@@ -17,7 +17,7 @@
 package pcc.puppet.enforcer.fuimos.provider.management.ports.mapper;
 
 import org.mapstruct.Mapper;
-import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
+import pcc.puppet.enforcer.fuimos.provider.management.domain.ServiceOperator;
 import pcc.puppet.enforcer.fuimos.provider.management.event.ServiceOperatorCreatedEvent;
 
 @Mapper(componentModel = "spring")

@@ -18,7 +18,7 @@ package pcc.puppet.enforcer.fuimos.network.management.domain;
 
 import java.util.List;
 import lombok.Data;
-import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
+import pcc.puppet.enforcer.fuimos.provider.management.domain.ServiceOperator;
 
 @Data
 public class ServicePlan {

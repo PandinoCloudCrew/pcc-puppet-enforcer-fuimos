@@ -16,7 +16,7 @@
 
 package pcc.puppet.enforcer.fuimos.common.error;
 
-import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
+import pcc.puppet.enforcer.fuimos.provider.management.domain.ServiceOperator;
 
 public class ServiceOperatorNotFound extends RecordNotFound {
 

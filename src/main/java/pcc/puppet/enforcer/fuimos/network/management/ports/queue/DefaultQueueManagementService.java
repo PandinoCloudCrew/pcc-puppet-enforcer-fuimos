@@ -24,7 +24,7 @@ import pcc.puppet.enforcer.fuimos.network.ingress.command.MessageSendCommand;
 import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
 import pcc.puppet.enforcer.fuimos.network.management.domain.OperatorQueue;
 import pcc.puppet.enforcer.fuimos.network.management.ports.mapper.OperatorQueueMapper;
-import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
+import pcc.puppet.enforcer.fuimos.provider.management.domain.ServiceOperator;
 
 @Slf4j
 @Service
@@ -35,8 +35,9 @@ public class DefaultQueueManagementService implements QueueManagementService {
 
   @Override
   public OperatorQueue create(
-      ServiceOperator operator, Network network, MessageSendCommand message) {
+      String trackId, ServiceOperator operator, Network network, MessageSendCommand message) {
     OperatorQueue queue = operatorQueueMapper.fromCommand(message);
+    queue.setTrackId(trackId);
     queue.setOperator(operator);
     queue.setNetwork(network);
     queue.setName(

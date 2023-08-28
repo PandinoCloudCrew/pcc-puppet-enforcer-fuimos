@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import pcc.puppet.enforcer.fuimos.adapters.http.OperatorIngressClient;
+import pcc.puppet.enforcer.fuimos.provider.ingress.adapters.http.OperatorIngressClient;
 
 @Slf4j
 @Configuration
@@ -30,12 +30,10 @@ public class HttpClientFactory {
 
   private final HttpServiceConfiguration serviceConfiguration;
 
-
   @Bean
   public OperatorIngressClient operatorIngressClient(RestTemplateBuilder restTemplateBuilder) {
     String baseUrl = serviceConfiguration.getOperatorIngress().getUri();
     log.info("created OperatorIngressClient with host: " + baseUrl);
     return new OperatorIngressClient(baseUrl, restTemplateBuilder.build());
   }
-
 }
