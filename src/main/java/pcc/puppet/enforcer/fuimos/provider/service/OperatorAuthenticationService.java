@@ -16,12 +16,14 @@
 
 package pcc.puppet.enforcer.fuimos.provider.service;
 
+import pcc.puppet.enforcer.fuimos.common.error.NetworkNotFound;
+import pcc.puppet.enforcer.fuimos.common.error.ServiceConsumerNotFound;
+import pcc.puppet.enforcer.fuimos.common.error.ServiceOperatorNotFound;
 import pcc.puppet.enforcer.fuimos.provider.command.ConsumerAuthenticateCommand;
 import pcc.puppet.enforcer.fuimos.provider.event.ConsumerAuthenticationEvent;
-import reactor.core.publisher.Mono;
 
 public interface OperatorAuthenticationService {
 
-  Mono<ConsumerAuthenticationEvent> authenticate(
-      String trackId, ConsumerAuthenticateCommand command);
+  ConsumerAuthenticationEvent authenticate(String trackId, ConsumerAuthenticateCommand command)
+      throws ServiceOperatorNotFound, NetworkNotFound, ServiceConsumerNotFound;
 }

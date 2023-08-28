@@ -16,12 +16,15 @@
 
 package pcc.puppet.enforcer.fuimos.provider.management.service;
 
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.stereotype.Service;
 import pcc.puppet.enforcer.app.tools.Data;
+import pcc.puppet.enforcer.fuimos.common.error.NetworkNotFound;
 import pcc.puppet.enforcer.fuimos.common.error.ServiceOperatorNotFound;
+import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
 import pcc.puppet.enforcer.fuimos.network.management.domain.NetworkOperator;
 import pcc.puppet.enforcer.fuimos.network.management.ports.repository.NetworkOperatorRepository;
 import pcc.puppet.enforcer.fuimos.network.management.service.NetworkManagementService;
@@ -30,8 +33,6 @@ import pcc.puppet.enforcer.fuimos.provider.management.command.ServiceOperatorCre
 import pcc.puppet.enforcer.fuimos.provider.management.event.ServiceOperatorCreatedEvent;
 import pcc.puppet.enforcer.fuimos.provider.management.ports.mapper.ServiceOperatorMapper;
 import pcc.puppet.enforcer.fuimos.provider.management.ports.repository.ServiceOperatorRepository;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
@@ -39,62 +40,36 @@ import reactor.core.publisher.Mono;
 public class DefaultOperatorManagementService implements OperatorManagementService {
   private final ServiceOperatorRepository operatorRepository;
   private final ServiceOperatorMapper operatorMapper;
-  private final NetworkManagementService networkManagementService;
+  private final NetworkManagementService networkMgmtSvc;
   private final NetworkOperatorRepository networkOperatorRepository;
 
   @Override
-  public Mono<ServiceOperatorCreatedEvent> create(
-      String trackId, ServiceOperatorCreateCommand command) {
-    return networkManagementService
-        .findById(trackId, command.getNetworkId())
-        .flatMap(
-            network -> {
-              ServiceOperator operator =
-                  ServiceOperator.builder()
-                      .id(Data.id())
-                      .salt(KeyGenerators.string().generateKey())
-                      .name(command.getName())
-                      .network(network)
-                      .type(command.getType())
-                      .build();
-              return operatorRepository
-                  .save(operator)
-                  .flatMap(
-                      entity -> {
-                        NetworkOperator networkOperator =
-                            NetworkOperator.builder()
-                                .id(Data.id())
-                                .network(network)
-                                .operator(entity)
-                                .build();
-                        return networkOperatorRepository
-                            .save(networkOperator)
-                            .map(NetworkOperator::getOperator);
-                      })
-                  .map(operatorMapper::toEvent);
-            });
+  public ServiceOperatorCreatedEvent create(String trackId, ServiceOperatorCreateCommand command)
+      throws NetworkNotFound {
+    Network network = networkMgmtSvc.findById(trackId, command.getNetworkId());
+    ServiceOperator operator =
+        operatorRepository.save(
+            ServiceOperator.builder()
+                .id(Data.id())
+                .salt(KeyGenerators.string().generateKey())
+                .name(command.getName())
+                .network(network)
+                .type(command.getType())
+                .build());
+    networkOperatorRepository.save(
+        NetworkOperator.builder().id(Data.id()).network(network).operator(operator).build());
+    return operatorMapper.toEvent(operator);
   }
 
   @Override
-  public Mono<ServiceOperator> findById(String trackId, String id) {
+  public ServiceOperator findById(String trackId, String id) throws ServiceOperatorNotFound {
     return operatorRepository
         .findById(id)
-        .flatMap(
-            operator ->
-                networkManagementService
-                    .findById(trackId, operator.getNetwork().getId())
-                    .map(operator::setNetwork))
-        .switchIfEmpty(Mono.error(new ServiceOperatorNotFound(trackId, id)));
+        .orElseThrow(() -> new ServiceOperatorNotFound(trackId, id));
   }
 
   @Override
-  public Flux<ServiceOperator> findAll(String trackId) {
-    return operatorRepository
-        .findAll()
-        .flatMap(
-            operator ->
-                networkManagementService
-                    .findById(trackId, operator.getNetwork().getId())
-                    .map(operator::setNetwork));
+  public Stream<ServiceOperator> findAll(String trackId) {
+    return operatorRepository.findAll().stream();
   }
 }

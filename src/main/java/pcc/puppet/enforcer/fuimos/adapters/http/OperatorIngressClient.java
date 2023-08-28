@@ -17,33 +17,42 @@
 package pcc.puppet.enforcer.fuimos.adapters.http;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static pcc.puppet.enforcer.fuimos.common.PccHeaders.TRACK_ID;
 
+import io.micrometer.observation.annotation.Observed;
 import jakarta.validation.constraints.NotNull;
 import javax.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.service.annotation.HttpExchange;
-import org.springframework.web.service.annotation.PostExchange;
+import org.springframework.http.MediaType;
+import org.springframework.web.client.RestTemplate;
 import pcc.puppet.enforcer.app.Project;
 import pcc.puppet.enforcer.fuimos.common.util.JwtTool;
 import pcc.puppet.enforcer.fuimos.provider.command.ConsumerAuthenticateCommand;
 import pcc.puppet.enforcer.fuimos.provider.event.ConsumerAuthenticationEvent;
-import reactor.core.publisher.Mono;
 
-@HttpExchange
-public interface OperatorIngressClient {
-  String USER_AGENT = "OperatorIngressClient/" + Project.VERSION + " (" + Project.NAME + ")";
+@Slf4j
+@RequiredArgsConstructor
+public class OperatorIngressClient {
+  private static final String USER_AGENT =
+      "OperatorIngressClient/" + Project.VERSION + " (" + Project.NAME + ")";
+  private final String operatorAuthenticateUrl;
+  private final RestTemplate restTemplate;
 
-  @PostExchange("/authenticate")
-  Mono<ConsumerAuthenticationEvent> authenticate(
-      @NotNull @RequestHeader(HttpHeaders.USER_AGENT) String userAgent,
-      @NotNull @RequestHeader(AUTHORIZATION) String authorization,
-      @NotNull @Valid @RequestBody ConsumerAuthenticateCommand command);
-
-  default Mono<ConsumerAuthenticationEvent> authenticate(
-      @NotNull @Valid ConsumerAuthenticateCommand command) {
-    return JwtTool.authentication()
-        .flatMap(token -> authenticate(USER_AGENT, JwtTool.toBearer(token), command));
+  @Observed
+  public ConsumerAuthenticationEvent authenticate(
+      @NotNull String trackId,
+      @NotNull ConsumerAuthenticateCommand command) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.add(HttpHeaders.USER_AGENT, USER_AGENT);
+    headers.add(TRACK_ID, trackId);
+    headers.add(AUTHORIZATION, JwtTool.bearerToken());
+    HttpEntity<ConsumerAuthenticateCommand> request = new HttpEntity<>(command, headers);
+    return restTemplate
+        .postForEntity(operatorAuthenticateUrl.concat("/authenticate"), request, ConsumerAuthenticationEvent.class)
+        .getBody();
   }
 }

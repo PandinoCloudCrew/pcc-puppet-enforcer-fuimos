@@ -19,6 +19,7 @@ package pcc.puppet.enforcer.fuimos.network.management.ports.api;
 import static pcc.puppet.enforcer.fuimos.common.PccHeaders.TRACK_ID;
 
 import jakarta.validation.constraints.NotNull;
+import java.util.stream.Stream;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -31,25 +32,23 @@ import org.springframework.web.bind.annotation.RestController;
 import pcc.puppet.enforcer.fuimos.network.management.command.NetworkCreateCommand;
 import pcc.puppet.enforcer.fuimos.network.management.event.NetworkCreatedEvent;
 import pcc.puppet.enforcer.fuimos.network.management.service.NetworkManagementService;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 @Validated
 @RestController
 @RequestMapping("network")
 @RequiredArgsConstructor
 public class NetworkController {
-  private final NetworkManagementService networkManagementService;
+  private final NetworkManagementService networkMgmtSvc;
 
   @PostMapping
-  public Mono<NetworkCreatedEvent> create(
+  public NetworkCreatedEvent create(
       @NotNull @RequestHeader(TRACK_ID) String trackId,
       @Valid @RequestBody NetworkCreateCommand command) {
-    return networkManagementService.create(command);
+    return networkMgmtSvc.create(trackId, command);
   }
 
   @GetMapping
-  public Flux<NetworkCreatedEvent> getAll(@NotNull @RequestHeader(TRACK_ID) String trackId) {
-    return networkManagementService.getAllNetworks();
+  public Stream<NetworkCreatedEvent> getAll(@NotNull @RequestHeader(TRACK_ID) String trackId) {
+    return networkMgmtSvc.getAllNetworks(trackId);
   }
 }

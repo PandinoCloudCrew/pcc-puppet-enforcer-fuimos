@@ -16,16 +16,16 @@
 
 package pcc.puppet.enforcer.fuimos.network.management.service;
 
+import java.util.stream.Stream;
+import pcc.puppet.enforcer.fuimos.common.error.NetworkNotFound;
 import pcc.puppet.enforcer.fuimos.network.management.command.NetworkCreateCommand;
 import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
 import pcc.puppet.enforcer.fuimos.network.management.event.NetworkCreatedEvent;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 public interface NetworkManagementService {
-  Mono<NetworkCreatedEvent> create(NetworkCreateCommand command);
+  NetworkCreatedEvent create(String trackId, NetworkCreateCommand command);
 
-  Mono<Network> findById(String trackId, String id);
+  Network findById(String trackId, String id) throws NetworkNotFound;
 
-  Flux<NetworkCreatedEvent> getAllNetworks();
+  Stream<NetworkCreatedEvent> getAllNetworks(String trackId);
 }

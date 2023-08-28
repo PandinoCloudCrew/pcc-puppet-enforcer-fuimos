@@ -29,6 +29,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pcc.puppet.enforcer.fuimos.common.error.DeviceNotFound;
+import pcc.puppet.enforcer.fuimos.common.error.NetworkNotFound;
+import pcc.puppet.enforcer.fuimos.common.error.ServiceConsumerNotFound;
+import pcc.puppet.enforcer.fuimos.common.error.ServiceOperatorNotFound;
 import pcc.puppet.enforcer.fuimos.network.ingress.command.DeviceAuthenticateCommand;
 import pcc.puppet.enforcer.fuimos.network.ingress.command.DeviceRegisterCommand;
 import pcc.puppet.enforcer.fuimos.network.ingress.command.MessageSendCommand;
@@ -38,7 +42,6 @@ import pcc.puppet.enforcer.fuimos.network.ingress.event.MessageSentEvent;
 import pcc.puppet.enforcer.fuimos.network.ingress.ports.queue.MessagePendingQueue;
 import pcc.puppet.enforcer.fuimos.network.ingress.service.NetworkAuthentication;
 import pcc.puppet.enforcer.fuimos.network.ingress.service.OperatorAuthentication;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 @Validated
@@ -52,7 +55,7 @@ public class DefaultNetworkIngressController {
   private final MessagePendingQueue messagePendingQueue;
 
   @PostMapping("send")
-  public Mono<MessageSentEvent> send(
+  public MessageSentEvent send(
       @NotNull @RequestHeader(TRACK_ID) String trackId,
       @NotNull @RequestHeader(DEVICE_TOKEN) String deviceToken,
       @Valid @RequestBody MessageSendCommand command) {
@@ -61,16 +64,18 @@ public class DefaultNetworkIngressController {
   }
 
   @PostMapping("authenticate")
-  public Mono<DeviceAuthenticationEvent> authenticate(
+  public DeviceAuthenticationEvent authenticate(
       @NotNull @RequestHeader(TRACK_ID) String trackId,
-      @Valid @RequestBody DeviceAuthenticateCommand command) {
+      @Valid @RequestBody DeviceAuthenticateCommand command)
+      throws DeviceNotFound {
     return operatorAuthentication.authenticate(trackId, command);
   }
 
   @PostMapping("join")
-  public Mono<DeviceRegistrationEvent> join(
+  public DeviceRegistrationEvent join(
       @NotNull @RequestHeader(TRACK_ID) String trackId,
-      @Valid @RequestBody DeviceRegisterCommand command) {
+      @Valid @RequestBody DeviceRegisterCommand command)
+      throws ServiceConsumerNotFound, ServiceOperatorNotFound, NetworkNotFound {
     log.info("create device {}", command);
     return networkAuthentication.register(trackId, command);
   }

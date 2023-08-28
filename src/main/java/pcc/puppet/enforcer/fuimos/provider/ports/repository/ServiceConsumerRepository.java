@@ -16,10 +16,9 @@
 
 package pcc.puppet.enforcer.fuimos.provider.ports.repository;
 
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import pcc.puppet.enforcer.fuimos.provider.domain.ServiceConsumer;
 
 @Repository
-public interface ServiceConsumerRepository
-    extends ReactiveCrudRepository<ServiceConsumer, String> {}
+public interface ServiceConsumerRepository extends CrudRepository<ServiceConsumer, String> {}

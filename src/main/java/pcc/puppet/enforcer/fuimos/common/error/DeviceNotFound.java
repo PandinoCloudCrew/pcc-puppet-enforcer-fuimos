@@ -16,7 +16,8 @@
 
 package pcc.puppet.enforcer.fuimos.common.error;
 
-import pcc.puppet.enforcer.app.tools.Mask;
+import static pcc.puppet.enforcer.app.tools.Mask.lastThree;
+
 import pcc.puppet.enforcer.fuimos.medium.domain.Device;
 import pcc.puppet.enforcer.fuimos.medium.domain.DeviceType;
 
@@ -27,9 +28,6 @@ public class DeviceNotFound extends RecordNotFound {
   }
 
   public DeviceNotFound(String trackId, String address, DeviceType type) {
-    super(
-        Device.class.getSimpleName(),
-        trackId,
-        String.format("%s::%s", type, Mask.lastThree(address)));
+    super(Device.class.getSimpleName(), trackId, String.format("%s::%s", type, lastThree(address)));
   }
 }

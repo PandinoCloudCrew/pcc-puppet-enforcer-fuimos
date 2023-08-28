@@ -16,28 +16,32 @@
 
 package pcc.puppet.enforcer.app.configuration;
 
+import java.util.Objects;
+import java.util.Optional;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.domain.ReactiveAuditorAware;
-import org.springframework.data.mongodb.config.EnableReactiveMongoAuditing;
-import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 @Configuration
-@EnableReactiveMongoAuditing
-@EnableReactiveMongoRepositories(basePackages = {"pcc.puppet.*"})
+@EnableMongoAuditing
+@EnableMongoRepositories(basePackages = {"pcc.puppet.*"})
 public class MongoDbConfiguration {
   @Bean
-  ReactiveAuditorAware<String> auditorAware() {
-    return () ->
-        ReactiveSecurityContextHolder.getContext()
-            .map(SecurityContext::getAuthentication)
-            .filter(Authentication::isAuthenticated)
-            .map(Authentication::getPrincipal)
-            .map(Jwt.class::cast)
-            .map(jwt -> jwt.getClaim("preferred_username"));
+  AuditorAware<String> auditorAware() {
+    return () -> {
+      SecurityContext context = SecurityContextHolder.getContext();
+      Authentication authentication = context.getAuthentication();
+      if (Objects.nonNull(authentication) && authentication.isAuthenticated()) {
+        var jwt = (Jwt) authentication.getPrincipal();
+        return Optional.of(jwt.getClaim("preferred_username"));
+      }
+      return Optional.empty();
+    };
   }
 }

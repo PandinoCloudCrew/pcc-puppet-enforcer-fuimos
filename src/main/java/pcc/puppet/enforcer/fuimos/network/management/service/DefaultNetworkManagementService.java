@@ -16,6 +16,7 @@
 
 package pcc.puppet.enforcer.fuimos.network.management.service;
 
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.encrypt.Encryptors;
@@ -27,8 +28,6 @@ import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
 import pcc.puppet.enforcer.fuimos.network.management.event.NetworkCreatedEvent;
 import pcc.puppet.enforcer.fuimos.network.management.ports.mapper.NetworkMapper;
 import pcc.puppet.enforcer.fuimos.network.management.ports.repository.NetworkRepository;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
@@ -39,22 +38,21 @@ public class DefaultNetworkManagementService implements NetworkManagementService
   private final NetworkMapper networkMapper;
 
   @Override
-  public Mono<NetworkCreatedEvent> create(NetworkCreateCommand command) {
+  public NetworkCreatedEvent create(String trackId, NetworkCreateCommand command) {
     Network network = networkMapper.fromCommand(command);
     TextEncryptor encryptor = Encryptors.text(network.getId(), network.getSalt());
     network.setFingerprint(encryptor.encrypt(command.getName()));
-    return networkRepository.save(network).map(networkMapper::toEvent);
+    Network entity = networkRepository.save(network);
+    return networkMapper.entityToEvent(entity);
   }
 
   @Override
-  public Mono<Network> findById(String trackId, String id) {
-    return networkRepository
-        .findById(id)
-        .switchIfEmpty(Mono.error(new NetworkNotFound(trackId, id)));
+  public Network findById(String trackId, String id) throws NetworkNotFound {
+    return networkRepository.findById(id).orElseThrow(() -> new NetworkNotFound(trackId, id));
   }
 
   @Override
-  public Flux<NetworkCreatedEvent> getAllNetworks() {
-    return networkRepository.findAll().map(networkMapper::toEvent);
+  public Stream<NetworkCreatedEvent> getAllNetworks(String trackId) {
+    return networkRepository.findAll().stream().map(networkMapper::entityToEvent);
   }
 }

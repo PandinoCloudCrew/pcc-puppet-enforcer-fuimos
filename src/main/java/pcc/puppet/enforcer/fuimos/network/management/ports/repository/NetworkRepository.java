@@ -16,9 +16,12 @@
 
 package pcc.puppet.enforcer.fuimos.network.management.ports.repository;
 
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import java.util.List;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
 
 @Repository
-public interface NetworkRepository extends ReactiveCrudRepository<Network, String> {}
+public interface NetworkRepository extends CrudRepository<Network, String> {
+  List<Network> findAll();
+}

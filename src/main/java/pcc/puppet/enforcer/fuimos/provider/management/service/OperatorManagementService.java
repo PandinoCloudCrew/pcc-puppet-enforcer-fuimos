@@ -16,16 +16,18 @@
 
 package pcc.puppet.enforcer.fuimos.provider.management.service;
 
+import java.util.stream.Stream;
+import pcc.puppet.enforcer.fuimos.common.error.NetworkNotFound;
+import pcc.puppet.enforcer.fuimos.common.error.ServiceOperatorNotFound;
 import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
 import pcc.puppet.enforcer.fuimos.provider.management.command.ServiceOperatorCreateCommand;
 import pcc.puppet.enforcer.fuimos.provider.management.event.ServiceOperatorCreatedEvent;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 public interface OperatorManagementService {
-  Mono<ServiceOperatorCreatedEvent> create(String trackId, ServiceOperatorCreateCommand command);
+  ServiceOperatorCreatedEvent create(String trackId, ServiceOperatorCreateCommand command)
+      throws NetworkNotFound;
 
-  Mono<ServiceOperator> findById(String trackId, String id);
+  ServiceOperator findById(String trackId, String id) throws ServiceOperatorNotFound;
 
-  Flux<ServiceOperator> findAll(String trackId);
+  Stream<ServiceOperator> findAll(String trackId);
 }

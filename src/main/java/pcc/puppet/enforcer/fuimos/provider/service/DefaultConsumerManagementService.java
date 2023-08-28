@@ -18,17 +18,19 @@ package pcc.puppet.enforcer.fuimos.provider.service;
 
 import static pcc.puppet.enforcer.app.tools.Mask.lastThree;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pcc.puppet.enforcer.fuimos.common.error.ServiceConsumerNotFound;
+import pcc.puppet.enforcer.fuimos.common.error.ServiceOperatorNotFound;
 import pcc.puppet.enforcer.fuimos.provider.command.ServiceConsumerCreateCommand;
 import pcc.puppet.enforcer.fuimos.provider.domain.ServiceConsumer;
+import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
 import pcc.puppet.enforcer.fuimos.provider.event.ServiceConsumerCreationEvent;
 import pcc.puppet.enforcer.fuimos.provider.management.service.OperatorManagementService;
 import pcc.puppet.enforcer.fuimos.provider.ports.mapper.ServiceConsumerMapper;
 import pcc.puppet.enforcer.fuimos.provider.ports.repository.ServiceConsumerRepository;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
@@ -39,26 +41,23 @@ public class DefaultConsumerManagementService implements ConsumerManagementServi
   private final OperatorManagementService operatorManagementService;
 
   @Override
-  public Mono<ServiceConsumerCreationEvent> create(
-      String trackId, ServiceConsumerCreateCommand command) {
-    return operatorManagementService
-        .findById(trackId, command.getOperatorId())
-        .flatMap(
-            operator -> {
-              ServiceConsumer consumer = consumerMapper.fromCommand(command);
-              consumer.setOperator(operator);
-              log.info(
-                  "creating consumer with id {} for operator {}",
-                  lastThree(consumer.getNaturalId()),
-                  operator.getId());
-              return consumerRepository.save(consumer).map(consumerMapper::toEvent);
-            });
+  public ServiceConsumerCreationEvent create(String trackId, ServiceConsumerCreateCommand command)
+      throws ServiceOperatorNotFound {
+    ServiceOperator operator = operatorManagementService.findById(trackId, command.getOperatorId());
+    ServiceConsumer consumer = consumerMapper.fromCommand(command);
+    consumer.setOperator(operator);
+    log.info(
+        "creating consumer with id {} for operator {}",
+        lastThree(consumer.getNaturalId()),
+        operator.getId());
+    ServiceConsumer entity = consumerRepository.save(consumer);
+    return consumerMapper.toEvent(entity);
   }
 
   @Override
-  public Mono<ServiceConsumer> findById(String trackId, String id) {
+  public ServiceConsumer findById(String trackId, @NotNull String id) throws ServiceConsumerNotFound {
     return consumerRepository
         .findById(id)
-        .switchIfEmpty(Mono.error(new ServiceConsumerNotFound(trackId, id)));
+        .orElseThrow(() -> new ServiceConsumerNotFound(trackId, id));
   }
 }

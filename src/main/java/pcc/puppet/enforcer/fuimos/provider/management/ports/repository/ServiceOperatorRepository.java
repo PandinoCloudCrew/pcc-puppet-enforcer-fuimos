@@ -16,10 +16,12 @@
 
 package pcc.puppet.enforcer.fuimos.provider.management.ports.repository;
 
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import java.util.List;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
 
 @Repository
-public interface ServiceOperatorRepository
-    extends ReactiveCrudRepository<ServiceOperator, String> {}
+public interface ServiceOperatorRepository extends CrudRepository<ServiceOperator, String> {
+  List<ServiceOperator> findAll();
+}

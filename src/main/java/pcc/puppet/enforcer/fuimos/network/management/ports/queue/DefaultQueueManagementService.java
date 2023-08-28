@@ -25,7 +25,6 @@ import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
 import pcc.puppet.enforcer.fuimos.network.management.domain.OperatorQueue;
 import pcc.puppet.enforcer.fuimos.network.management.ports.mapper.OperatorQueueMapper;
 import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
@@ -35,7 +34,7 @@ public class DefaultQueueManagementService implements QueueManagementService {
   private final OperatorQueueMapper operatorQueueMapper;
 
   @Override
-  public Mono<OperatorQueue> create(
+  public OperatorQueue create(
       ServiceOperator operator, Network network, MessageSendCommand message) {
     OperatorQueue queue = operatorQueueMapper.fromCommand(message);
     queue.setOperator(operator);
@@ -46,6 +45,6 @@ public class DefaultQueueManagementService implements QueueManagementService {
             network.getId(), queue.getType(), operator.getId(), queue.getPriority()));
     return operatorQueueRepository
         .findByName(queue.getName())
-        .switchIfEmpty(operatorQueueRepository.save(queue));
+        .orElse(operatorQueueRepository.save(queue));
   }
 }

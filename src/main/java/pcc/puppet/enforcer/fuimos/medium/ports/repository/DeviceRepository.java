@@ -16,13 +16,13 @@
 
 package pcc.puppet.enforcer.fuimos.medium.ports.repository;
 
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import java.util.Optional;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import pcc.puppet.enforcer.fuimos.medium.domain.Device;
 import pcc.puppet.enforcer.fuimos.medium.domain.DeviceType;
-import reactor.core.publisher.Mono;
 
 @Repository
-public interface DeviceRepository extends ReactiveCrudRepository<Device, String> {
-  Mono<Device> findByAddressAndType(String address, DeviceType type);
+public interface DeviceRepository extends CrudRepository<Device, String> {
+  Optional<Device> findByAddressAndType(String address, DeviceType type);
 }

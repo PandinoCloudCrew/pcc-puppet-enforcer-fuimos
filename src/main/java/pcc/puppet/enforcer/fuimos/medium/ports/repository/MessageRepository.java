@@ -16,9 +16,9 @@
 
 package pcc.puppet.enforcer.fuimos.medium.ports.repository;
 
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import pcc.puppet.enforcer.fuimos.medium.domain.Message;
 
 @Repository
-public interface MessageRepository extends ReactiveCrudRepository<Message, String> {}
+public interface MessageRepository extends CrudRepository<Message, String> {}

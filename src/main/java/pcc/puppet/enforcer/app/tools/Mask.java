@@ -17,14 +17,15 @@
 package pcc.puppet.enforcer.app.tools;
 
 import java.util.regex.Pattern;
-import lombok.experimental.UtilityClass;
 
-@UtilityClass
-public class Mask {
+public final class Mask {
+
+  private Mask() {}
+
   private static final Pattern lastThree = Pattern.compile(".(?=.{3})");
   private static final String STAR = "*";
 
-  public String lastThree(String content) {
+  public static String lastThree(String content) {
     return lastThree.matcher(content).replaceAll(STAR);
   }
 }

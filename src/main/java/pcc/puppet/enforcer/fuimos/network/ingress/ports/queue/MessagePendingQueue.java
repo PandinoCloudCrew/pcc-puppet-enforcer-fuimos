@@ -18,8 +18,7 @@ package pcc.puppet.enforcer.fuimos.network.ingress.ports.queue;
 
 import pcc.puppet.enforcer.fuimos.network.ingress.command.MessageSendCommand;
 import pcc.puppet.enforcer.fuimos.network.ingress.event.MessageSentEvent;
-import reactor.core.publisher.Mono;
 
 public interface MessagePendingQueue {
-  Mono<MessageSentEvent> accept(String trackId, MessageSendCommand message);
+  MessageSentEvent accept(String trackId, MessageSendCommand message);
 }

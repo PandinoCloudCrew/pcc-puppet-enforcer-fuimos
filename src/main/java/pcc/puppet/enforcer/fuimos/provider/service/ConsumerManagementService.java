@@ -16,13 +16,15 @@
 
 package pcc.puppet.enforcer.fuimos.provider.service;
 
+import pcc.puppet.enforcer.fuimos.common.error.ServiceConsumerNotFound;
+import pcc.puppet.enforcer.fuimos.common.error.ServiceOperatorNotFound;
 import pcc.puppet.enforcer.fuimos.provider.command.ServiceConsumerCreateCommand;
 import pcc.puppet.enforcer.fuimos.provider.domain.ServiceConsumer;
 import pcc.puppet.enforcer.fuimos.provider.event.ServiceConsumerCreationEvent;
-import reactor.core.publisher.Mono;
 
 public interface ConsumerManagementService {
-  Mono<ServiceConsumerCreationEvent> create(String trackId, ServiceConsumerCreateCommand command);
+  ServiceConsumerCreationEvent create(String trackId, ServiceConsumerCreateCommand command)
+      throws ServiceOperatorNotFound;
 
-  Mono<ServiceConsumer> findById(String trackId, String id);
+  ServiceConsumer findById(String trackId, String id) throws ServiceConsumerNotFound;
 }

@@ -16,11 +16,11 @@
 
 package pcc.puppet.enforcer.fuimos.network.ingress.service;
 
+import pcc.puppet.enforcer.fuimos.common.error.DeviceNotFound;
 import pcc.puppet.enforcer.fuimos.network.ingress.command.DeviceAuthenticateCommand;
 import pcc.puppet.enforcer.fuimos.network.ingress.event.DeviceAuthenticationEvent;
-import reactor.core.publisher.Mono;
 
 public interface OperatorAuthentication {
-  Mono<DeviceAuthenticationEvent> authenticate(
-      String trackId, DeviceAuthenticateCommand authenticateCommand);
+  DeviceAuthenticationEvent authenticate(
+      String trackId, DeviceAuthenticateCommand authenticateCommand) throws DeviceNotFound;
 }

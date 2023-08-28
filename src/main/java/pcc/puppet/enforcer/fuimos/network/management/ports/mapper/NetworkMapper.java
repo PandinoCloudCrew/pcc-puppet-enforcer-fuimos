@@ -37,5 +37,5 @@ public interface NetworkMapper {
         .build();
   }
 
-  NetworkCreatedEvent toEvent(Network network);
+  NetworkCreatedEvent entityToEvent(Network network);
 }

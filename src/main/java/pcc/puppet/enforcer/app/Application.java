@@ -16,18 +16,15 @@
 
 package pcc.puppet.enforcer.app;
 
-import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.vault.support.VaultResponse;
 import reactor.core.publisher.Hooks;
 
 @EnableScheduling
 @EnableConfigurationProperties
 @SpringBootApplication(scanBasePackages = {"pcc.puppet.*"})
-@RegisterReflectionForBinding({VaultResponse.class})
 public class Application {
   /**
    * Entry point for app

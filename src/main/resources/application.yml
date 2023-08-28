@@ -9,7 +9,7 @@ spring:
   application:
     name: pcc-puppet-enforcer-fuimos
   main:
-    web-application-type: reactive
+    web-application-type: servlet
 
   cloud:
     vault:
@@ -21,11 +21,17 @@ spring:
           min-renewal: 1m
   security:
     oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: ${provider-keycloak-url}/realms/${keycloak-realm}
+            user-name-attribute: preferred_username
       resourceserver:
         jwk:
           issuer-uri: ${provider-keycloak-url}/realms/${keycloak-realm}
         jwt:
           issuer-uri: ${provider-keycloak-url}/realms/${keycloak-realm}
+          jwk-set-uri: ${provider-keycloak-url}/realms/${keycloak-realm}/protocol/openid-connect/certs
 
 logging:
   pattern:

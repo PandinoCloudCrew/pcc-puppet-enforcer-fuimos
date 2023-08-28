@@ -20,8 +20,7 @@ import pcc.puppet.enforcer.fuimos.network.ingress.command.MessageSendCommand;
 import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
 import pcc.puppet.enforcer.fuimos.network.management.domain.OperatorQueue;
 import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
-import reactor.core.publisher.Mono;
 
 public interface QueueManagementService {
-  Mono<OperatorQueue> create(ServiceOperator operator, Network network, MessageSendCommand message);
+  OperatorQueue create(ServiceOperator operator, Network network, MessageSendCommand message);
 }

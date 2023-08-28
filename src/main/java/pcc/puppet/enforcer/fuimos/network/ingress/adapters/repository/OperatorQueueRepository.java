@@ -16,12 +16,12 @@
 
 package pcc.puppet.enforcer.fuimos.network.ingress.adapters.repository;
 
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import java.util.Optional;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import pcc.puppet.enforcer.fuimos.network.management.domain.OperatorQueue;
-import reactor.core.publisher.Mono;
 
 @Repository
-public interface OperatorQueueRepository extends ReactiveCrudRepository<OperatorQueue, String> {
-  Mono<OperatorQueue> findByName(String name);
+public interface OperatorQueueRepository extends CrudRepository<OperatorQueue, String> {
+  Optional<OperatorQueue> findByName(String name);
 }

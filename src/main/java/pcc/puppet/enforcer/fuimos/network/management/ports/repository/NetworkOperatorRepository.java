@@ -16,10 +16,9 @@
 
 package pcc.puppet.enforcer.fuimos.network.management.ports.repository;
 
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import pcc.puppet.enforcer.fuimos.network.management.domain.NetworkOperator;
 
 @Repository
-public interface NetworkOperatorRepository
-    extends ReactiveCrudRepository<NetworkOperator, String> {}
+public interface NetworkOperatorRepository extends CrudRepository<NetworkOperator, String> {}

@@ -16,14 +16,17 @@
 
 package pcc.puppet.enforcer.fuimos.network.ingress.service;
 
+import pcc.puppet.enforcer.fuimos.common.error.NetworkNotFound;
+import pcc.puppet.enforcer.fuimos.common.error.ServiceConsumerNotFound;
+import pcc.puppet.enforcer.fuimos.common.error.ServiceOperatorNotFound;
 import pcc.puppet.enforcer.fuimos.network.ingress.command.DeviceAuthenticateCommand;
 import pcc.puppet.enforcer.fuimos.network.ingress.command.DeviceRegisterCommand;
 import pcc.puppet.enforcer.fuimos.network.ingress.event.DeviceAuthenticationEvent;
 import pcc.puppet.enforcer.fuimos.network.ingress.event.DeviceRegistrationEvent;
-import reactor.core.publisher.Mono;
 
 public interface NetworkAuthentication {
   DeviceAuthenticationEvent createOrGet(DeviceAuthenticateCommand registerCommand);
 
-  Mono<DeviceRegistrationEvent> register(String trackId, DeviceRegisterCommand command);
+  DeviceRegistrationEvent register(String trackId, DeviceRegisterCommand command)
+      throws ServiceConsumerNotFound, ServiceOperatorNotFound, NetworkNotFound;
 }

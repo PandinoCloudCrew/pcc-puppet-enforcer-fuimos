@@ -23,9 +23,10 @@ import org.springframework.stereotype.Service;
 import pcc.puppet.enforcer.app.tools.Data;
 import pcc.puppet.enforcer.fuimos.medium.service.DeviceManagementService;
 import pcc.puppet.enforcer.fuimos.network.ingress.command.MessageSendCommand;
+import pcc.puppet.enforcer.fuimos.network.ingress.domain.DeviceAuthentication;
 import pcc.puppet.enforcer.fuimos.network.ingress.event.MessageSentEvent;
+import pcc.puppet.enforcer.fuimos.network.management.domain.OperatorQueue;
 import pcc.puppet.enforcer.fuimos.network.management.ports.queue.QueueManagementService;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
@@ -37,27 +38,21 @@ public class DefaultMessagePendingQueue implements MessagePendingQueue {
   private final DeviceManagementService deviceManagementService;
 
   @Override
-  public Mono<MessageSentEvent> accept(String trackId, MessageSendCommand message) {
-    return deviceManagementService
-        .findByToken(trackId, message.getSenderToken())
-        .flatMap(
-            deviceAuthentication ->
-                queueManagementService
-                    .create(
-                        deviceAuthentication.getDevice().getOperator(),
-                        deviceAuthentication.getDevice().getNetwork(),
-                        message)
-                    .flatMap(
-                        operatorQueue -> {
-                          message.setTrackId(trackId);
-                          streamBridge.send(operatorQueue.getName(), message);
-                          return Mono.just(
-                              MessageSentEvent.builder()
-                                  .id(Data.id())
-                                  .queue(operatorQueue)
-                                  .createDate(Data.now())
-                                  .trackId(trackId)
-                                  .build());
-                        }));
+  public MessageSentEvent accept(String trackId, MessageSendCommand message) {
+    DeviceAuthentication deviceAuthentication =
+        deviceManagementService.findByToken(trackId, message.getSenderToken());
+    OperatorQueue operatorQueue =
+        queueManagementService.create(
+            deviceAuthentication.getDevice().getOperator(),
+            deviceAuthentication.getDevice().getNetwork(),
+            message);
+    message.setTrackId(trackId);
+    streamBridge.send(operatorQueue.getName(), message);
+    return MessageSentEvent.builder()
+        .id(Data.id())
+        .queue(operatorQueue)
+        .createDate(Data.now())
+        .trackId(trackId)
+        .build();
   }
 }

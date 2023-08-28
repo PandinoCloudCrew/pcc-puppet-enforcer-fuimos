@@ -19,36 +19,35 @@ package pcc.puppet.enforcer.fuimos.common.util;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.oauth2.jwt.Jwt;
 import pcc.puppet.enforcer.keycloak.domain.BearerTokenResponse;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @UtilityClass
-public class JwtTool {
+public class RxJwtTool {
 
   private static final String DEFAULT_VALUE =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaW"
           + "F0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
 
-  public static String toBearer(Jwt authentication) {
+  public String toBearer(Jwt authentication) {
     return "Bearer " + authentication.getTokenValue();
   }
 
-  public static String bearerToken() {
-    return "Bearer " + authentication().getTokenValue();
-  }
-
-  public static String toBearer(BearerTokenResponse authentication) {
+  public String toBearer(BearerTokenResponse authentication) {
     return "Bearer " + authentication.getAccessToken();
   }
 
-  public static Jwt authentication() {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    if (authentication.isAuthenticated()) {
-      return (Jwt) authentication.getPrincipal();
-    }
-    return getJwt();
+  public static Mono<Jwt> authentication() {
+    return ReactiveSecurityContextHolder.getContext()
+        .map(SecurityContext::getAuthentication)
+        .filter(Authentication::isAuthenticated)
+        .map(Authentication::getPrincipal)
+        .map(Jwt.class::cast)
+        .defaultIfEmpty(getJwt());
   }
 
   private static Jwt getJwt() {

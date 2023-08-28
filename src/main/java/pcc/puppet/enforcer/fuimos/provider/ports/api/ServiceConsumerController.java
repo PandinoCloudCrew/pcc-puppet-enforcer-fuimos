@@ -26,10 +26,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pcc.puppet.enforcer.fuimos.common.error.ServiceOperatorNotFound;
 import pcc.puppet.enforcer.fuimos.provider.command.ServiceConsumerCreateCommand;
 import pcc.puppet.enforcer.fuimos.provider.event.ServiceConsumerCreationEvent;
 import pcc.puppet.enforcer.fuimos.provider.service.ConsumerManagementService;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 @Validated
@@ -38,13 +38,14 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ServiceConsumerController {
 
-  private final ConsumerManagementService consumerManagementService;
+  private final ConsumerManagementService consumerMgmtSvc;
 
   @PostMapping
-  public Mono<ServiceConsumerCreationEvent> create(
+  public ServiceConsumerCreationEvent create(
       @NotNull @RequestHeader("track-id") String trackId,
-      @Valid @RequestBody ServiceConsumerCreateCommand command) {
+      @Valid @RequestBody ServiceConsumerCreateCommand command)
+      throws ServiceOperatorNotFound {
     log.info("creating service consumer");
-    return consumerManagementService.create(trackId, command);
+    return consumerMgmtSvc.create(trackId, command);
   }
 }

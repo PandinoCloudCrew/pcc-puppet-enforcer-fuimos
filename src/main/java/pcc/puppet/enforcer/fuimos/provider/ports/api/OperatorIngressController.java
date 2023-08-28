@@ -18,33 +18,40 @@ package pcc.puppet.enforcer.fuimos.provider.ports.api;
 
 import static pcc.puppet.enforcer.fuimos.common.PccHeaders.TRACK_ID;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pcc.puppet.enforcer.fuimos.common.error.NetworkNotFound;
+import pcc.puppet.enforcer.fuimos.common.error.ServiceConsumerNotFound;
+import pcc.puppet.enforcer.fuimos.common.error.ServiceOperatorNotFound;
 import pcc.puppet.enforcer.fuimos.provider.command.ConsumerAuthenticateCommand;
 import pcc.puppet.enforcer.fuimos.provider.event.ConsumerAuthenticationEvent;
 import pcc.puppet.enforcer.fuimos.provider.service.OperatorAuthenticationService;
-import reactor.core.publisher.Mono;
 
 @Slf4j
+@Validated
 @RestController
 @RequestMapping("/operator")
 @RequiredArgsConstructor
 public class OperatorIngressController {
 
-  private final OperatorAuthenticationService authenticationService;
+  private final OperatorAuthenticationService authenticationSvc;
 
   @PostMapping("/authenticate")
-  public Mono<ConsumerAuthenticationEvent> authenticate(
-      @NotNull @RequestHeader(TRACK_ID) String trackId, ConsumerAuthenticateCommand command) {
+  public ConsumerAuthenticationEvent authenticate(
+      @NotNull @RequestHeader(TRACK_ID) String trackId, @Valid @RequestBody ConsumerAuthenticateCommand command)
+      throws ServiceConsumerNotFound, ServiceOperatorNotFound, NetworkNotFound {
     log.info(
         "device {} authentication request for operator {}",
         command.getDeviceId(),
         command.getOperatorId());
-    return authenticationService.authenticate(trackId, command);
+    return authenticationSvc.authenticate(trackId, command);
   }
 }

@@ -18,15 +18,10 @@ package pcc.puppet.enforcer.app.configuration.http;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClient.Builder;
-import org.springframework.web.reactive.function.client.support.WebClientAdapter;
-import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 import pcc.puppet.enforcer.fuimos.adapters.http.OperatorIngressClient;
-import reactor.netty.http.client.HttpClient;
 
 @Slf4j
 @Configuration
@@ -35,26 +30,12 @@ public class HttpClientFactory {
 
   private final HttpServiceConfiguration serviceConfiguration;
 
-  private static HttpClient httpClient(String baseUrl) {
-    return HttpClient.create().baseUrl(baseUrl).followRedirect(true).compress(true).wiretap(true);
-  }
 
   @Bean
-  public OperatorIngressClient operatorIngressClient(Builder builder) {
+  public OperatorIngressClient operatorIngressClient(RestTemplateBuilder restTemplateBuilder) {
     String baseUrl = serviceConfiguration.getOperatorIngress().getUri();
     log.info("created OperatorIngressClient with host: " + baseUrl);
-    HttpServiceProxyFactory factory = getFactory(builder, baseUrl);
-    return factory.createClient(OperatorIngressClient.class);
+    return new OperatorIngressClient(baseUrl, restTemplateBuilder.build());
   }
 
-  private static HttpServiceProxyFactory getFactory(Builder builder, String url) {
-    WebClient webClient =
-        builder
-            .baseUrl(url)
-            .clientConnector(new ReactorClientHttpConnector(httpClient(url)))
-            .build();
-    return HttpServiceProxyFactory.builder()
-        .clientAdapter(WebClientAdapter.forClient(webClient))
-        .build();
-  }
 }

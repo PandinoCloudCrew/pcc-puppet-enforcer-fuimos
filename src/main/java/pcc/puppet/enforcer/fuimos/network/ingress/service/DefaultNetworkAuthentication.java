@@ -19,6 +19,9 @@ package pcc.puppet.enforcer.fuimos.network.ingress.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import pcc.puppet.enforcer.fuimos.common.error.NetworkNotFound;
+import pcc.puppet.enforcer.fuimos.common.error.ServiceConsumerNotFound;
+import pcc.puppet.enforcer.fuimos.common.error.ServiceOperatorNotFound;
 import pcc.puppet.enforcer.fuimos.medium.domain.Device;
 import pcc.puppet.enforcer.fuimos.medium.ports.mapper.DeviceMapper;
 import pcc.puppet.enforcer.fuimos.medium.service.DeviceManagementService;
@@ -26,10 +29,12 @@ import pcc.puppet.enforcer.fuimos.network.ingress.command.DeviceAuthenticateComm
 import pcc.puppet.enforcer.fuimos.network.ingress.command.DeviceRegisterCommand;
 import pcc.puppet.enforcer.fuimos.network.ingress.event.DeviceAuthenticationEvent;
 import pcc.puppet.enforcer.fuimos.network.ingress.event.DeviceRegistrationEvent;
+import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
 import pcc.puppet.enforcer.fuimos.network.management.service.NetworkManagementService;
+import pcc.puppet.enforcer.fuimos.provider.domain.ServiceConsumer;
+import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
 import pcc.puppet.enforcer.fuimos.provider.management.service.OperatorManagementService;
 import pcc.puppet.enforcer.fuimos.provider.service.ConsumerManagementService;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
@@ -48,16 +53,16 @@ public class DefaultNetworkAuthentication implements NetworkAuthentication {
   }
 
   @Override
-  public Mono<DeviceRegistrationEvent> register(String trackId, DeviceRegisterCommand command) {
+  public DeviceRegistrationEvent register(String trackId, DeviceRegisterCommand command)
+      throws ServiceConsumerNotFound, ServiceOperatorNotFound, NetworkNotFound {
     Device device = deviceMapper.fromCommand(command);
-    return consumerManagementService
-        .findById(trackId, command.getConsumerId())
-        .zipWith(operatorManagementService.findById(trackId, command.getOperatorId()))
-        .zipWith(networkManagementService.findById(trackId, command.getNetworkId()))
-        .flatMap(
-            tupleResult -> {
-              deviceMapper.addValues(tupleResult, device);
-              return deviceManagementService.create(trackId, device).map(deviceMapper::fromEntity);
-            });
+    ServiceConsumer consumer = consumerManagementService.findById(trackId, command.getConsumerId());
+    device.setConsumer(consumer);
+    ServiceOperator operator = operatorManagementService.findById(trackId, command.getOperatorId());
+    device.setOperator(operator);
+    Network network = networkManagementService.findById(trackId, command.getNetworkId());
+    device.setNetwork(network);
+    Device entity = deviceManagementService.create(trackId, device);
+    return deviceMapper.fromEntity(entity);
   }
 }

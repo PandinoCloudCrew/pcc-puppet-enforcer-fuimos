@@ -28,6 +28,9 @@ import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.stereotype.Service;
+import pcc.puppet.enforcer.fuimos.common.error.NetworkNotFound;
+import pcc.puppet.enforcer.fuimos.common.error.ServiceConsumerNotFound;
+import pcc.puppet.enforcer.fuimos.common.error.ServiceOperatorNotFound;
 import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
 import pcc.puppet.enforcer.fuimos.network.management.service.NetworkManagementService;
 import pcc.puppet.enforcer.fuimos.provider.command.ConsumerAuthenticateCommand;
@@ -35,36 +38,30 @@ import pcc.puppet.enforcer.fuimos.provider.domain.ServiceConsumer;
 import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
 import pcc.puppet.enforcer.fuimos.provider.event.ConsumerAuthenticationEvent;
 import pcc.puppet.enforcer.fuimos.provider.management.service.OperatorManagementService;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class DefaultOperatorAuthenticationService implements OperatorAuthenticationService {
-  private final OperatorManagementService operatorManagementService;
-  private final ConsumerManagementService consumerManagementService;
-  private final NetworkManagementService networkManagementService;
+  private final OperatorManagementService operatorMgmtSvc;
+  private final ConsumerManagementService consumerMgmtSvc;
+  private final NetworkManagementService networkMgmtSvc;
   private final Map<String, TextEncryptor> encryptors = new HashMap<>();
 
   @Override
-  public Mono<ConsumerAuthenticationEvent> authenticate(
-      String trackId, ConsumerAuthenticateCommand command) {
-    return consumerManagementService
-        .findById(trackId, command.getConsumerId())
-        .zipWith(operatorManagementService.findById(trackId, command.getOperatorId()))
-        .zipWith(networkManagementService.findById(trackId, command.getNetworkId()))
-        .map(
-            objects -> {
-              ServiceConsumer consumer = objects.getT1().getT1();
-              ServiceOperator operator = objects.getT1().getT2();
-              Network network = objects.getT2();
-              TextEncryptor encryptor = obtainEncryptor(operator, network);
-              return ConsumerAuthenticationEvent.builder()
-                  .deviceId(command.getDeviceId())
-                  .expirationDate(Instant.now().plus(Duration.ofDays(7)))
-                  .token(encryptor.encrypt(generateToken(consumer).toString()))
-                  .build();
-            });
+  public ConsumerAuthenticationEvent authenticate(
+      String trackId, ConsumerAuthenticateCommand command)
+      throws ServiceOperatorNotFound, NetworkNotFound, ServiceConsumerNotFound {
+    ServiceConsumer consumer = consumerMgmtSvc.findById(trackId, command.getConsumerId());
+    ServiceOperator operator = operatorMgmtSvc.findById(trackId, command.getOperatorId());
+    Network network = networkMgmtSvc.findById(trackId, command.getNetworkId());
+
+    TextEncryptor encryptor = obtainEncryptor(operator, network);
+    return ConsumerAuthenticationEvent.builder()
+        .deviceId(command.getDeviceId())
+        .expirationDate(Instant.now().plus(Duration.ofDays(7)))
+        .token(encryptor.encrypt(generateToken(consumer).toString()))
+        .build();
   }
 
   private ServiceToken generateToken(ServiceConsumer consumer) {
@@ -79,7 +76,8 @@ public class DefaultOperatorAuthenticationService implements OperatorAuthenticat
     String id = String.format("%s::%s", operator.getId(), network.getId());
     if (encryptors.containsKey(id)) return encryptors.get(id);
     TextEncryptor encryptor = Encryptors.text(operator.getSalt(), network.getSalt());
-    return encryptors.put(id, encryptor);
+    encryptors.put(id, encryptor);
+    return encryptor;
   }
 
   @Data

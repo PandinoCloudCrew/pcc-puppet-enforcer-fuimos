@@ -16,10 +16,14 @@
 
 package pcc.puppet.enforcer.fuimos.network.ingress.ports.repository;
 
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import jakarta.validation.constraints.NotNull;
+import java.util.Optional;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import pcc.puppet.enforcer.fuimos.network.ingress.domain.DeviceAuthentication;
 
 @Repository
 public interface DeviceAuthenticationRepository
-    extends ReactiveCrudRepository<DeviceAuthentication, String> {}
+    extends CrudRepository<DeviceAuthentication, String> {
+  Optional<DeviceAuthentication> findById(@NotNull String id);
+}
