@@ -31,8 +31,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pcc.puppet.enforcer.fuimos.common.error.NetworkNotFound;
-import pcc.puppet.enforcer.fuimos.provider.management.domain.ServiceOperator;
 import pcc.puppet.enforcer.fuimos.provider.management.command.ServiceOperatorCreateCommand;
+import pcc.puppet.enforcer.fuimos.provider.management.domain.ServiceOperator;
 import pcc.puppet.enforcer.fuimos.provider.management.event.ServiceOperatorCreatedEvent;
 import pcc.puppet.enforcer.fuimos.provider.management.service.OperatorManagementService;
 

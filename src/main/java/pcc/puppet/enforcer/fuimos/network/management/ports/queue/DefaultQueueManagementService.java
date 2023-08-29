@@ -16,13 +16,17 @@
 
 package pcc.puppet.enforcer.fuimos.network.management.ports.queue;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pcc.puppet.enforcer.fuimos.network.ingress.adapters.repository.OperatorQueueRepository;
 import pcc.puppet.enforcer.fuimos.network.ingress.command.MessageSendCommand;
+import pcc.puppet.enforcer.fuimos.network.management.domain.DeliveryPriority;
 import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
 import pcc.puppet.enforcer.fuimos.network.management.domain.OperatorQueue;
+import pcc.puppet.enforcer.fuimos.network.management.domain.ServiceType;
 import pcc.puppet.enforcer.fuimos.network.management.ports.mapper.OperatorQueueMapper;
 import pcc.puppet.enforcer.fuimos.provider.management.domain.ServiceOperator;
 
@@ -33,19 +37,30 @@ public class DefaultQueueManagementService implements QueueManagementService {
   private final OperatorQueueRepository operatorQueueRepository;
   private final OperatorQueueMapper operatorQueueMapper;
 
+  public String queueName(
+      Network network, ServiceOperator operator, ServiceType type, DeliveryPriority priority) {
+    return String.format("%s-%s-%s-%s", network.getId(), type, operator.getId(), priority);
+  }
+
   @Override
   public OperatorQueue create(
-      String trackId, ServiceOperator operator, Network network, MessageSendCommand message) {
+      String trackId,
+      DeliveryPriority priority,
+      ServiceOperator operator,
+      Network network,
+      MessageSendCommand message) {
     OperatorQueue queue = operatorQueueMapper.fromCommand(message);
     queue.setTrackId(trackId);
     queue.setOperator(operator);
     queue.setNetwork(network);
-    queue.setName(
-        String.format(
-            "%s-%s-%s-%s",
-            network.getId(), queue.getType(), operator.getId(), queue.getPriority()));
-    return operatorQueueRepository
-        .findByName(queue.getName())
-        .orElse(operatorQueueRepository.save(queue));
+    queue.setPriority(priority);
+    queue.setName(this.queueName(network, operator, message.getType(), priority));
+    log.debug("Looking for queue {}", queue.getName());
+    return operatorQueueRepository.save(queue);
+  }
+
+  @Cacheable(cacheNames = "pcc::fuimos::operator-queue-by-name")
+  public Optional<OperatorQueue> findByName(String name) {
+    return operatorQueueRepository.findByName(name);
   }
 }

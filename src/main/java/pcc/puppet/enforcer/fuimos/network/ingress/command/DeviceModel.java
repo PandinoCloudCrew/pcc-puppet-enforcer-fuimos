@@ -19,12 +19,12 @@ package pcc.puppet.enforcer.fuimos.network.ingress.command;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
-import pcc.puppet.enforcer.fuimos.medium.domain.MessageContentType;
+import pcc.puppet.enforcer.fuimos.medium.domain.DeviceType;
 
 @Data
 @Builder
 @Jacksonized
-public class MessageContentCommand {
-  private String content;
-  private MessageContentType contentType;
+public class DeviceModel {
+  private String address;
+  private DeviceType type;
 }

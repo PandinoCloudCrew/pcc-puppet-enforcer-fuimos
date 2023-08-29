@@ -28,7 +28,6 @@ public interface OperatorQueueMapper {
     return OperatorQueue.builder()
         .id(Data.id())
         .type(message.getType())
-        .priority(message.getPriority())
         .createDate(Data.now())
         .build();
   }

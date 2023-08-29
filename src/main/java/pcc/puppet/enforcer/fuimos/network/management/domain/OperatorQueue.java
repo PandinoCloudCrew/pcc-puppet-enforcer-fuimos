@@ -21,19 +21,28 @@ import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import pcc.puppet.enforcer.fuimos.provider.management.domain.ServiceOperator;
 
 @Data
 @Builder
+@Document
 @Jacksonized
 public class OperatorQueue {
 
-  @NotNull private String id;
+  @NotNull @Id private String id;
   @NotNull private String trackId;
+
+  @NotNull
+  @Indexed(unique = true, background = true)
   private String name;
+
   private ServiceType type;
   private DeliveryPriority priority;
-  private ServiceOperator operator;
-  private Network network;
+  @NotNull @DocumentReference private ServiceOperator operator;
+  @NotNull @DocumentReference private Network network;
   private Instant createDate;
 }

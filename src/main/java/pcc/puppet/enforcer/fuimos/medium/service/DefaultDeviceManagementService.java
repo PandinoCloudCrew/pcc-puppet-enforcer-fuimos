@@ -19,16 +19,17 @@ package pcc.puppet.enforcer.fuimos.medium.service;
 import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pcc.puppet.enforcer.app.tools.Mask;
 import pcc.puppet.enforcer.fuimos.common.error.DeviceAuthenticationDenied;
 import pcc.puppet.enforcer.fuimos.common.error.DeviceNotFound;
+import pcc.puppet.enforcer.fuimos.medium.adapters.repository.DeviceRepository;
 import pcc.puppet.enforcer.fuimos.medium.domain.Device;
 import pcc.puppet.enforcer.fuimos.medium.domain.DeviceType;
-import pcc.puppet.enforcer.fuimos.medium.adapters.repository.DeviceRepository;
+import pcc.puppet.enforcer.fuimos.network.ingress.adapters.repository.DeviceAuthenticationRepository;
 import pcc.puppet.enforcer.fuimos.network.ingress.domain.DeviceAuthentication;
 import pcc.puppet.enforcer.fuimos.network.ingress.event.DeviceAuthenticationEvent;
-import pcc.puppet.enforcer.fuimos.network.ingress.adapters.repository.DeviceAuthenticationRepository;
 import pcc.puppet.enforcer.fuimos.provider.ingress.event.ConsumerAuthenticationEvent;
 
 @Slf4j
@@ -74,6 +75,7 @@ public class DefaultDeviceManagementService implements DeviceManagementService {
   }
 
   @Override
+  @Cacheable(cacheNames = "pcc::fuimos::device-by-token", key = "#token")
   public DeviceAuthentication findByToken(String trackId, String token) {
     return deviceAuthenticationRepository
         .findById(token)

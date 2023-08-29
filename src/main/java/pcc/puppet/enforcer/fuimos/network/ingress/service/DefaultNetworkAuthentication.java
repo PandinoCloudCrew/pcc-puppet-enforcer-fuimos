@@ -33,8 +33,8 @@ import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
 import pcc.puppet.enforcer.fuimos.network.management.service.NetworkManagementService;
 import pcc.puppet.enforcer.fuimos.provider.management.domain.ServiceConsumer;
 import pcc.puppet.enforcer.fuimos.provider.management.domain.ServiceOperator;
-import pcc.puppet.enforcer.fuimos.provider.management.service.OperatorManagementService;
 import pcc.puppet.enforcer.fuimos.provider.management.service.ConsumerManagementService;
+import pcc.puppet.enforcer.fuimos.provider.management.service.OperatorManagementService;
 
 @Slf4j
 @Service

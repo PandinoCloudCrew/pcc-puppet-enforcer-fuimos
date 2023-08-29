@@ -16,12 +16,25 @@
 
 package pcc.puppet.enforcer.fuimos.network.management.ports.queue;
 
+import java.util.Optional;
 import pcc.puppet.enforcer.fuimos.network.ingress.command.MessageSendCommand;
+import pcc.puppet.enforcer.fuimos.network.management.domain.DeliveryPriority;
 import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
 import pcc.puppet.enforcer.fuimos.network.management.domain.OperatorQueue;
+import pcc.puppet.enforcer.fuimos.network.management.domain.ServiceType;
 import pcc.puppet.enforcer.fuimos.provider.management.domain.ServiceOperator;
 
 public interface QueueManagementService {
+
+  String queueName(
+      Network network, ServiceOperator operator, ServiceType type, DeliveryPriority priority);
+
   OperatorQueue create(
-      String trackId, ServiceOperator operator, Network network, MessageSendCommand message);
+      String trackId,
+      DeliveryPriority priority,
+      ServiceOperator operator,
+      Network network,
+      MessageSendCommand message);
+
+  Optional<OperatorQueue> findByName(String name);
 }

@@ -16,20 +16,15 @@
 
 package pcc.puppet.enforcer.fuimos.network.ingress.command;
 
-import java.time.Instant;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
-import pcc.puppet.enforcer.fuimos.network.management.domain.ServiceType;
+import pcc.puppet.enforcer.fuimos.medium.domain.MessageContentType;
 
 @Data
 @Builder
 @Jacksonized
-public class MessageSendCommand {
-  private String senderToken;
-  private ServiceType type;
-  private DeviceModel sender;
-  private DeviceModel receiver;
-  private MessageModel message;
-  private Instant sendDate;
+public class MessageModel {
+  private String content;
+  private MessageContentType contentType;
 }

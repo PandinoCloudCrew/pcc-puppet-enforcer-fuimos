@@ -19,9 +19,11 @@ package pcc.puppet.enforcer.app;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import reactor.core.publisher.Hooks;
 
+@EnableCaching
 @EnableScheduling
 @EnableConfigurationProperties
 @SpringBootApplication(scanBasePackages = {"pcc.puppet.*"})

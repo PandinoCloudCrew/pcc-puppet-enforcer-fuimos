@@ -21,10 +21,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
 import pcc.puppet.enforcer.app.tools.Data;
+import pcc.puppet.enforcer.fuimos.medium.domain.Device;
 import pcc.puppet.enforcer.fuimos.medium.service.DeviceManagementService;
 import pcc.puppet.enforcer.fuimos.network.ingress.command.MessageSendCommand;
 import pcc.puppet.enforcer.fuimos.network.ingress.domain.DeviceAuthentication;
 import pcc.puppet.enforcer.fuimos.network.ingress.event.MessageSentEvent;
+import pcc.puppet.enforcer.fuimos.network.management.domain.DeliveryPriority;
 import pcc.puppet.enforcer.fuimos.network.management.domain.OperatorQueue;
 import pcc.puppet.enforcer.fuimos.network.management.ports.queue.QueueManagementService;
 
@@ -39,14 +41,24 @@ public class DefaultMessagePendingQueue implements MessagePendingQueue {
 
   @Override
   public MessageSentEvent accept(String trackId, MessageSendCommand message) {
+    DeliveryPriority deliveryPriority = DeliveryPriority.NONE;
     DeviceAuthentication deviceAuthentication =
         deviceManagementService.findByToken(trackId, message.getSenderToken());
+    Device device = deviceAuthentication.getDevice();
+    String queueName =
+        queueManagementService.queueName(
+            device.getNetwork(), device.getOperator(), message.getType(), deliveryPriority);
     OperatorQueue operatorQueue =
-        queueManagementService.create(
-            trackId,
-            deviceAuthentication.getDevice().getOperator(),
-            deviceAuthentication.getDevice().getNetwork(),
-            message);
+        queueManagementService
+            .findByName(queueName)
+            .orElseGet(
+                () ->
+                    queueManagementService.create(
+                        trackId,
+                        deliveryPriority,
+                        device.getOperator(),
+                        device.getNetwork(),
+                        message));
     streamBridge.send(operatorQueue.getName(), message);
     return MessageSentEvent.builder()
         .id(Data.id())

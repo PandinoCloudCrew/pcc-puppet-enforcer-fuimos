@@ -24,12 +24,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pcc.puppet.enforcer.fuimos.common.error.ServiceConsumerNotFound;
 import pcc.puppet.enforcer.fuimos.common.error.ServiceOperatorNotFound;
+import pcc.puppet.enforcer.fuimos.provider.management.adapters.repository.ServiceConsumerRepository;
 import pcc.puppet.enforcer.fuimos.provider.management.command.ServiceConsumerCreateCommand;
 import pcc.puppet.enforcer.fuimos.provider.management.domain.ServiceConsumer;
 import pcc.puppet.enforcer.fuimos.provider.management.domain.ServiceOperator;
 import pcc.puppet.enforcer.fuimos.provider.management.event.ServiceConsumerCreationEvent;
 import pcc.puppet.enforcer.fuimos.provider.management.ports.mapper.ServiceConsumerMapper;
-import pcc.puppet.enforcer.fuimos.provider.management.adapters.repository.ServiceConsumerRepository;
 
 @Slf4j
 @Service
