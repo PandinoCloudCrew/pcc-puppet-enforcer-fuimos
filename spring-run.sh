@@ -10,4 +10,6 @@ export SPRING_CLOUD_VAULT_SCHEME=https
 export SPRING_CLOUD_VAULT_TOKEN=hvs.QJswihsgYxhRc08qKyLama3l
 export SPRING_CONFIG_IMPORT=vault://
 
-./gradlew bootRun
+VERSION=$(./gradlew properties -q | awk '/^version:/ {print $2}')
+
+/c/Users/yesid/.sdkman/candidates/java/21.0.35-openjdk/bin/java -jar build/libs/pcc-puppet-enforcer-fuimos-$VERSION.jar
