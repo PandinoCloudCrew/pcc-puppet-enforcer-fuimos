@@ -21,7 +21,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import reactor.core.publisher.Hooks;
 
 @EnableCaching
 @EnableScheduling
@@ -34,7 +33,6 @@ public class Application {
    * @param args program arguments
    */
   public static void main(final String[] args) {
-    Hooks.enableAutomaticContextPropagation();
     SpringApplication.run(Application.class, args);
   }
 }
