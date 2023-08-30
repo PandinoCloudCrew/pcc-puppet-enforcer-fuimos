@@ -61,7 +61,7 @@ public class DefaultNetworkIngressController {
       @NotNull @RequestHeader(DEVICE_TOKEN) String deviceToken,
       @Valid @RequestBody MessageSendCommand command) {
     command.setSenderToken(deviceToken);
-    log.info("handle {} send request from {}", command.getType(), Mask.lastThree(command.getSender().getAddress()));
+    log.trace("handle {} send request from {}", command.getType(), Mask.lastThree(command.getSender().getAddress()));
     return messagePendingQueue.accept(trackId, command);
   }
 
