@@ -12,4 +12,6 @@ export SPRING_CONFIG_IMPORT=vault://
 
 VERSION=$(./gradlew properties -q | awk '/^version:/ {print $2}')
 
+./gradlew clean build
+
 /c/Users/yesid/.sdkman/candidates/java/21.0.35-openjdk/bin/java -jar build/libs/pcc-puppet-enforcer-fuimos-$VERSION.jar
