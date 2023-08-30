@@ -39,7 +39,15 @@ public class DefaultQueueManagementService implements QueueManagementService {
 
   public String queueName(
       Network network, ServiceOperator operator, ServiceType type, DeliveryPriority priority) {
-    return String.format("%s-%s-%s-%s", network.getId(), type, operator.getId(), priority);
+    StringBuilder sb = new StringBuilder();
+    return sb.append(network.getId())
+        .append("-")
+        .append(type)
+        .append("-")
+        .append(operator.getId())
+        .append("-")
+        .append(priority)
+        .toString();
   }
 
   @Override

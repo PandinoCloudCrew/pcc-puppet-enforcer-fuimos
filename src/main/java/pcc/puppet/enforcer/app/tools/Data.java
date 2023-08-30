@@ -25,7 +25,7 @@ import lombok.experimental.UtilityClass;
 public class Data {
 
   public Ulid ulid() {
-    return UlidCreator.getMonotonicUlid();
+    return UlidCreator.getUlid();
   }
 
   public String id() {
