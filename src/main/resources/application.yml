@@ -6,6 +6,10 @@ server:
     min-response-size: 5KB
 
 spring:
+  threads:
+    virtual:
+      enabled: true
+
   application:
     name: pcc-puppet-enforcer-fuimos
   main:
@@ -32,9 +36,8 @@ spring:
           jwk-set-uri: ${provider-keycloak-url}/realms/${keycloak-realm}/protocol/openid-connect/certs
 
 logging:
-  pattern:
-    console: "[${spring.application.name}] [%t] [%-5p] [%X{traceId}] [%X{spanId}] [%X{track-id}] [%logger{15}] [%m]%n"
   level:
+    org.springframework.boot.web: DEBUG
     reactor.netty.http.client: INFO
     io.micrometer: INFO
     pcc: DEBUG

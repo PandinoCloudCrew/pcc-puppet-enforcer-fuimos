@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pcc.puppet.enforcer.app.tools.Mask;
 import pcc.puppet.enforcer.fuimos.common.error.DeviceNotFound;
 import pcc.puppet.enforcer.fuimos.common.error.NetworkNotFound;
 import pcc.puppet.enforcer.fuimos.common.error.ServiceConsumerNotFound;
@@ -60,6 +61,7 @@ public class DefaultNetworkIngressController {
       @NotNull @RequestHeader(DEVICE_TOKEN) String deviceToken,
       @Valid @RequestBody MessageSendCommand command) {
     command.setSenderToken(deviceToken);
+    log.info("handle {} send request from {}", command.getType(), Mask.lastThree(command.getSender().getAddress()));
     return messagePendingQueue.accept(trackId, command);
   }
 
