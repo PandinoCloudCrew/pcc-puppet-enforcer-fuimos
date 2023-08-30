@@ -16,6 +16,7 @@
 
 package pcc.puppet.enforcer.fuimos.network.ingress.command;
 
+import java.io.Serializable;
 import java.time.Instant;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +26,7 @@ import pcc.puppet.enforcer.fuimos.network.management.domain.ServiceType;
 @Data
 @Builder
 @Jacksonized
-public class MessageSendCommand {
+public class MessageSendCommand implements Serializable {
   private String senderToken;
   private ServiceType type;
   private DeviceModel sender;

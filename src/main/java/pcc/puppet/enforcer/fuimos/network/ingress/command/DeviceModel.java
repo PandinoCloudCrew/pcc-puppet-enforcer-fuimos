@@ -16,6 +16,7 @@
 
 package pcc.puppet.enforcer.fuimos.network.ingress.command;
 
+import java.io.Serializable;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
@@ -24,7 +25,7 @@ import pcc.puppet.enforcer.fuimos.medium.domain.DeviceType;
 @Data
 @Builder
 @Jacksonized
-public class DeviceModel {
+public class DeviceModel implements Serializable {
   private String address;
   private DeviceType type;
 }
