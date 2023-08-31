@@ -21,7 +21,6 @@ import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
-import pcc.puppet.enforcer.fuimos.network.management.domain.OperatorQueue;
 
 @Data
 @Builder
@@ -29,6 +28,6 @@ import pcc.puppet.enforcer.fuimos.network.management.domain.OperatorQueue;
 public class MessageSentEvent {
   @NotNull private String id;
   @NotNull private String trackId;
-  private OperatorQueue queue;
+  private OperatorQueuePresenter queue;
   private Instant createDate;
 }

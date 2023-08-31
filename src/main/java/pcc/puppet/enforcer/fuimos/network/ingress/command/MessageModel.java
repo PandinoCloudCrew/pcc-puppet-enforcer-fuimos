@@ -17,14 +17,18 @@
 package pcc.puppet.enforcer.fuimos.network.ingress.command;
 
 import java.io.Serializable;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
 import pcc.puppet.enforcer.fuimos.medium.domain.MessageContentType;
 
 @Data
 @Builder
 @Jacksonized
+@AllArgsConstructor
+@NoArgsConstructor
 public class MessageModel implements Serializable {
   private String content;
   private MessageContentType contentType;

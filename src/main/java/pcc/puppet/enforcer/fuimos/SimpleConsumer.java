@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.network.ingress.command;
+package pcc.puppet.enforcer.fuimos;
 
-import java.io.Serializable;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.extern.jackson.Jacksonized;
-import pcc.puppet.enforcer.fuimos.medium.domain.DeviceType;
+import java.util.function.Consumer;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.Message;
+import org.springframework.stereotype.Component;
+import pcc.puppet.enforcer.fuimos.network.ingress.command.MessageSendCommand;
 
-@Data
-@Builder
-@Jacksonized
-@AllArgsConstructor
-@NoArgsConstructor
-public class DeviceModel implements Serializable {
-  private String address;
-  private DeviceType type;
+@Slf4j
+@Component("messageSendConsumer")
+public class SimpleConsumer implements Consumer<Message<MessageSendCommand>> {
+
+  @Override
+  public void accept(Message<MessageSendCommand> msg) {
+    MessageSendCommand payload = msg.getPayload();
+    log.info("{}", payload);
+  }
 }

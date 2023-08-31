@@ -20,12 +20,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MimeType;
 import pcc.puppet.enforcer.app.tools.Data;
 import pcc.puppet.enforcer.fuimos.medium.domain.Device;
 import pcc.puppet.enforcer.fuimos.medium.service.DeviceManagementService;
 import pcc.puppet.enforcer.fuimos.network.ingress.command.MessageSendCommand;
 import pcc.puppet.enforcer.fuimos.network.ingress.domain.DeviceAuthentication;
 import pcc.puppet.enforcer.fuimos.network.ingress.event.MessageSentEvent;
+import pcc.puppet.enforcer.fuimos.network.ingress.event.OperatorQueuePresenter;
 import pcc.puppet.enforcer.fuimos.network.management.domain.DeliveryPriority;
 import pcc.puppet.enforcer.fuimos.network.management.domain.OperatorQueue;
 import pcc.puppet.enforcer.fuimos.network.management.ports.queue.QueueManagementService;
@@ -34,7 +36,7 @@ import pcc.puppet.enforcer.fuimos.network.management.ports.queue.QueueManagement
 @Service
 @RequiredArgsConstructor
 public class DefaultMessagePendingQueue implements MessagePendingQueue {
-
+  private static final MimeType mimeType = MimeType.valueOf("application/*+avro");
   private final StreamBridge streamBridge;
   private final QueueManagementService queueManagementService;
   private final DeviceManagementService deviceManagementService;
@@ -59,10 +61,10 @@ public class DefaultMessagePendingQueue implements MessagePendingQueue {
                         device.getOperator(),
                         device.getNetwork(),
                         message));
-    streamBridge.send(operatorQueue.getName(), message);
+    streamBridge.send(operatorQueue.getName(), message, mimeType);
     return MessageSentEvent.builder()
         .id(Data.id())
-        .queue(operatorQueue)
+        .queue(OperatorQueuePresenter.fromCommand(operatorQueue))
         .createDate(Data.now())
         .trackId(trackId)
         .build();

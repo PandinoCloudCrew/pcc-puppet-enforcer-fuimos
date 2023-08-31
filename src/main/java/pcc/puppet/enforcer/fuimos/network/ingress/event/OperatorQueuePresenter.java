@@ -14,22 +14,27 @@
  * limitations under the License.
  */
 
-package pcc.puppet.enforcer.fuimos.network.ingress.command;
+package pcc.puppet.enforcer.fuimos.network.ingress.event;
 
-import java.io.Serializable;
-import lombok.AllArgsConstructor;
+import java.time.Instant;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
-import pcc.puppet.enforcer.fuimos.medium.domain.DeviceType;
+import pcc.puppet.enforcer.fuimos.network.management.domain.OperatorQueue;
 
 @Data
 @Builder
 @Jacksonized
-@AllArgsConstructor
-@NoArgsConstructor
-public class DeviceModel implements Serializable {
-  private String address;
-  private DeviceType type;
+public class OperatorQueuePresenter {
+  private String id;
+  private String name;
+  private Instant createDate;
+
+  public static OperatorQueuePresenter fromCommand(OperatorQueue operatorQueue) {
+    return OperatorQueuePresenter.builder()
+        .id(operatorQueue.getId())
+        .name(operatorQueue.getName())
+        .createDate(operatorQueue.getCreateDate())
+        .build();
+  }
 }
