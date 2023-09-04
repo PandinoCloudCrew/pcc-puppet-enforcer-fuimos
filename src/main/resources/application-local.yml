@@ -16,7 +16,7 @@ spring:
         dynamic-schema-generation-enabled: true
     stream:
       schema-registry-client:
-        endpoint: http://mbp.lan:8081
+        endpoint: ${redpanda-schema}
         cached: true
 #      bindings:
 #        messageSendConsumer-in-0:
@@ -27,4 +27,4 @@ spring:
           auto-create-topics: false
           auto-add-partitions: false
           auto-alter-topics: true
-          brokers: mbp.lan:9092
+          brokers: ${redpanda-broker}

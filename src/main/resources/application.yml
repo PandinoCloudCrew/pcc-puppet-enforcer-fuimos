@@ -59,7 +59,7 @@ management:
       type: w3c
   otlp:
     tracing:
-      endpoint: http://mbp.lan:4318/v1/traces
+      endpoint: ${otlp-host-http}/v1/traces
       headers:
         track-id: track-id
         X-Org-Id: X-Org-Id
@@ -68,7 +68,7 @@ management:
     metrics:
       export:
         enabled: true
-        url: http://mbp.lan:4318/v1/metrics
+        url: ${otlp-host-http}/v1/metrics
 
 provider:
   keycloak:
