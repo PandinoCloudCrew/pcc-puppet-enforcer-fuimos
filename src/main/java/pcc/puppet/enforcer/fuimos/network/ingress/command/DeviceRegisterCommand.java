@@ -16,12 +16,15 @@
 
 package pcc.puppet.enforcer.fuimos.network.ingress.command;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import pcc.puppet.enforcer.fuimos.medium.Device;
-import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
+import pcc.puppet.enforcer.fuimos.medium.domain.DeviceType;
 
 @Data
 public class DeviceRegisterCommand {
-  private Device device;
-  private ServiceOperator provider;
+  @NotNull private String address;
+  @NotNull private DeviceType type;
+  @NotNull private String networkId;
+  @NotNull private String operatorId;
+  @NotNull private String consumerId;
 }

@@ -1,3 +1,6 @@
 spring:
+  threads:
+    virtual:
+      enabled: true
   application:
     name: pcc-puppet-enforcer-fuimos

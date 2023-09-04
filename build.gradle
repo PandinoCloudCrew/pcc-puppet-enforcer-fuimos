@@ -3,8 +3,9 @@ import java.time.Instant
 plugins {
     id("java")
     id("jacoco")
-    id("org.springframework.boot") version "3.1.2"
-    id("io.spring.dependency-management") version "1.1.2"
+    id("idea")
+    id("org.springframework.boot") version "3.2.0-M2"
+    id("io.spring.dependency-management") version "1.1.3"
     id("com.diffplug.spotless") version "6.20.0"
     id("com.gorylenko.gradle-git-properties") version "2.4.1"
     id("com.palantir.git-version") version "3.0.0"
@@ -23,6 +24,17 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
+    maven { url 'https://projectlombok.org/edge-releases' }
+}
+
+ext {
+    set("snippetsDir", file("build/generated-snippets"))
+    set("springCloudVersion", "2023.0.0-M1")
 }
 
 sourceSets {
@@ -45,28 +57,20 @@ sourceSets {
     }
 }
 
-repositories {
-    mavenCentral()
-}
-
-ext {
-    set("snippetsDir", file("build/generated-snippets"))
-    set("springCloudVersion", "2022.0.3")
-}
-
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation("org.springframework.boot:spring-boot-starter-aop")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j")
+    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.cloud:spring-cloud-stream")
-    implementation("org.springframework.cloud:spring-cloud-stream-binder-kafka-reactive")
+    implementation("org.springframework.cloud:spring-cloud-stream-schema-registry-client")
+    implementation("org.springframework.cloud:spring-cloud-stream-binder-kafka")
     implementation("org.springframework.cloud:spring-cloud-starter-vault-config")
+    implementation("org.springframework.security:spring-security-oauth2-jose")
     implementation("org.passay:passay:$passayVersion")
     implementation("org.mapstruct:mapstruct:$mapstructProcessorVersion")
     implementation("net.datafaker:datafaker:$datafakerVersion")
@@ -76,16 +80,16 @@ dependencies {
     runtimeOnly("io.opentelemetry:opentelemetry-exporter-otlp")
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
     runtimeOnly("ch.qos.logback:logback-classic")
-    compileOnly("org.projectlombok:lombok")
-    annotationProcessor("org.projectlombok:lombok")
+    compileOnly("org.projectlombok:lombok:edge-SNAPSHOT")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    annotationProcessor("org.projectlombok:lombok-mapstruct-binding:$lombokMapstructBindingVersion")
     annotationProcessor("org.mapstruct:mapstruct-processor:$mapstructProcessorVersion")
+    annotationProcessor("org.projectlombok:lombok:edge-SNAPSHOT")
     testImplementation("org.springframework.cloud:spring-cloud-stream-test-binder")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.springframework.restdocs:spring-restdocs-webtestclient")
     testImplementation("org.springframework.security:spring-security-test")
-    testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.mockito:mockito-core")
     testImplementation("org.awaitility:awaitility:$awaitilityVersion")
     testImplementation("org.testcontainers:junit-jupiter")
@@ -94,7 +98,17 @@ dependencies {
 
 }
 
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
+        mavenBom "org.testcontainers:testcontainers-bom:$testcontainersVersion"
+    }
+}
+
 java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of("$javaVersion")
+    }
     sourceCompatibility = JavaVersion.toVersion("$javaVersion")
     targetCompatibility = JavaVersion.toVersion("$javaVersion")
 }
@@ -116,6 +130,7 @@ tasks {
         }
         bootBuildImage {
             imageName = "${System.env.DOCKER_IMAGE ?: "pcc.fyi/realm/$project.name"}"
+            createdDate = Instant.now().toString()
             tags = [
                     "${System.env.DOCKER_IMAGE ?: "pcc.fyi/realm/$project.name"}:$project.version",
                     "${System.env.DOCKER_IMAGE ?: "pcc.fyi/realm/$project.name"}:latest"
@@ -229,11 +244,4 @@ blossom {
     def resources = "src/main/resources/application.yml"
     replaceToken("@VERSION@", project.version, resources)
     replaceToken("@NAME@", project.name, resources)
-}
-
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
-        mavenBom "org.testcontainers:testcontainers-bom:$testcontainersVersion"
-    }
 }

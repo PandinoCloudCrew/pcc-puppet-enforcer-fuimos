@@ -16,24 +16,53 @@
 
 package pcc.puppet.enforcer.fuimos.network.ingress.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import pcc.puppet.enforcer.fuimos.common.error.NetworkNotFound;
+import pcc.puppet.enforcer.fuimos.common.error.ServiceConsumerNotFound;
+import pcc.puppet.enforcer.fuimos.common.error.ServiceOperatorNotFound;
+import pcc.puppet.enforcer.fuimos.medium.domain.Device;
+import pcc.puppet.enforcer.fuimos.medium.ports.mapper.DeviceMapper;
+import pcc.puppet.enforcer.fuimos.medium.service.DeviceManagementService;
 import pcc.puppet.enforcer.fuimos.network.ingress.command.DeviceAuthenticateCommand;
 import pcc.puppet.enforcer.fuimos.network.ingress.command.DeviceRegisterCommand;
 import pcc.puppet.enforcer.fuimos.network.ingress.event.DeviceAuthenticationEvent;
 import pcc.puppet.enforcer.fuimos.network.ingress.event.DeviceRegistrationEvent;
+import pcc.puppet.enforcer.fuimos.network.management.domain.Network;
+import pcc.puppet.enforcer.fuimos.network.management.service.NetworkManagementService;
+import pcc.puppet.enforcer.fuimos.provider.management.domain.ServiceConsumer;
+import pcc.puppet.enforcer.fuimos.provider.management.domain.ServiceOperator;
+import pcc.puppet.enforcer.fuimos.provider.management.service.ConsumerManagementService;
+import pcc.puppet.enforcer.fuimos.provider.management.service.OperatorManagementService;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class DefaultNetworkAuthentication implements NetworkAuthentication {
 
+  private final DeviceMapper deviceMapper;
+  private final DeviceManagementService deviceManagementService;
+  private final NetworkManagementService networkManagementService;
+  private final OperatorManagementService operatorManagementService;
+  private final ConsumerManagementService consumerManagementService;
+
   @Override
-  public DeviceAuthenticateCommand request(DeviceRegisterCommand registerCommand) {
+  public DeviceAuthenticationEvent createOrGet(DeviceAuthenticateCommand registerCommand) {
     return null;
   }
 
   @Override
-  public DeviceRegistrationEvent register(DeviceAuthenticationEvent authenticationEvent) {
-    return null;
+  public DeviceRegistrationEvent register(String trackId, DeviceRegisterCommand command)
+      throws ServiceConsumerNotFound, ServiceOperatorNotFound, NetworkNotFound {
+    Device device = deviceMapper.fromCommand(command);
+    ServiceConsumer consumer = consumerManagementService.findById(trackId, command.getConsumerId());
+    device.setConsumer(consumer);
+    ServiceOperator operator = operatorManagementService.findById(trackId, command.getOperatorId());
+    device.setOperator(operator);
+    Network network = networkManagementService.findById(trackId, command.getNetworkId());
+    device.setNetwork(network);
+    Device entity = deviceManagementService.create(trackId, device);
+    return deviceMapper.fromEntity(entity);
   }
 }

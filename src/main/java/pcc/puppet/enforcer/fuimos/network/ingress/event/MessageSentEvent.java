@@ -16,7 +16,18 @@
 
 package pcc.puppet.enforcer.fuimos.network.ingress.event;
 
+import java.time.Instant;
+import javax.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
+import lombok.extern.jackson.Jacksonized;
 
 @Data
-public class MessageSentEvent {}
+@Builder
+@Jacksonized
+public class MessageSentEvent {
+  @NotNull private String id;
+  @NotNull private String trackId;
+  private OperatorQueuePresenter queue;
+  private Instant createDate;
+}

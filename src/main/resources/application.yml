@@ -6,10 +6,14 @@ server:
     min-response-size: 5KB
 
 spring:
+  threads:
+    virtual:
+      enabled: true
+
   application:
     name: pcc-puppet-enforcer-fuimos
   main:
-    web-application-type: reactive
+    web-application-type: servlet
 
   cloud:
     vault:
@@ -21,17 +25,21 @@ spring:
           min-renewal: 1m
   security:
     oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: ${provider-keycloak-url}/realms/${keycloak-realm}
+            user-name-attribute: preferred_username
       resourceserver:
-        jwk:
-          jwk-set-uri: ${provider-keycloak-url}/realms/${keycloak-realm}/.well-known/openid-configuration
-          issuer-uri: ${provider-keycloak-url}/realms/${keycloak-realm}
         jwt:
-          issuer: ${provider-keycloak-url}/realms/${keycloak-realm}
+          issuer-uri: ${provider-keycloak-url}/realms/${keycloak-realm}
+          jwk-set-uri: ${provider-keycloak-url}/realms/${keycloak-realm}/protocol/openid-connect/certs
 
 logging:
   pattern:
     console: "[${spring.application.name}] [%t] [%-5p] [%X{traceId}] [%X{spanId}] [%X{track-id}] [%logger{15}] [%m]%n"
   level:
+    org.springframework.boot.web: DEBUG
     reactor.netty.http.client: INFO
     io.micrometer: INFO
     pcc: DEBUG
@@ -51,7 +59,7 @@ management:
       type: w3c
   otlp:
     tracing:
-      endpoint: http://mbp.lan:4318/v1/traces
+      endpoint: ${otlp-host-http}/v1/traces
       headers:
         track-id: track-id
         X-Org-Id: X-Org-Id
@@ -60,7 +68,7 @@ management:
     metrics:
       export:
         enabled: true
-        url: http://mbp.lan:4318/v1/metrics
+        url: ${otlp-host-http}/v1/metrics
 
 provider:
   keycloak:

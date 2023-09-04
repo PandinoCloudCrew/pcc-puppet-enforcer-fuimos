@@ -1,19 +1,30 @@
 spring:
+  http:
+    services:
+      operator-ingress:
+        url: http://localhost:9900
+        path: /operator
+  data:
+    mongodb:
+      auto-index-creation: true
+      uri: ${mongo-uri}
   cloud:
-    function:
-      definition: testConsumer
+#    function:
+#      definition: messageSendConsumer
+    schema:
+      avro:
+        dynamic-schema-generation-enabled: true
     stream:
-      bindings:
-        testTopic-out-0:
-          destination: test
-          group: local
-        testConsumer-in-0:
-          destination: test
-          group: local
+      schema-registry-client:
+        endpoint: ${redpanda-schema}
+        cached: true
+#      bindings:
+#        messageSendConsumer-in-0:
+#          destination: 01h8mvdny3x7kmqmg7mphmztx5-MESSAGE-01h8mvp2tmcydm31rq0bg0nqbz-NONE
+#          group: local
       kafka:
         binder:
           auto-create-topics: false
           auto-add-partitions: false
           auto-alter-topics: true
-          brokers: mbp.lan:9092
-
+          brokers: ${redpanda-broker}

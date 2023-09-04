@@ -17,12 +17,10 @@
 package pcc.puppet.enforcer.fuimos.network.ingress.command;
 
 import lombok.Data;
-import pcc.puppet.enforcer.fuimos.medium.Device;
-import pcc.puppet.enforcer.fuimos.provider.domain.ServiceOperator;
+import pcc.puppet.enforcer.fuimos.medium.domain.DeviceType;
 
 @Data
 public class DeviceAuthenticateCommand {
-  private Device device;
-  private ServiceOperator provider;
-  private String token;
+  private String address;
+  private DeviceType type;
 }

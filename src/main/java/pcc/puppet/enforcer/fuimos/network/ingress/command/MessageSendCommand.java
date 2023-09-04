@@ -16,19 +16,24 @@
 
 package pcc.puppet.enforcer.fuimos.network.ingress.command;
 
-import java.time.Instant;
+import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import pcc.puppet.enforcer.fuimos.destination.ReceiverDevice;
-import pcc.puppet.enforcer.fuimos.medium.Message;
-import pcc.puppet.enforcer.fuimos.network.domain.ServiceType;
-import pcc.puppet.enforcer.fuimos.origination.domain.SenderDevice;
+import lombok.NoArgsConstructor;
+import lombok.extern.jackson.Jacksonized;
+import pcc.puppet.enforcer.fuimos.network.management.domain.ServiceType;
 
 @Data
-public class MessageSendCommand {
-  private String id;
+@Builder
+@Jacksonized
+@AllArgsConstructor
+@NoArgsConstructor
+public class MessageSendCommand implements Serializable {
+  private String senderToken;
   private ServiceType type;
-  private SenderDevice source;
-  private ReceiverDevice destination;
-  private Message message;
-  private Instant createDate;
+  private DeviceModel sender;
+  private DeviceModel receiver;
+  private MessageModel message;
+  private String sendDate;
 }

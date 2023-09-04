@@ -25,10 +25,6 @@ public class DomainFactory {
 
   private final PodamFactory factory = new PodamFactoryImpl();
 
-  public MockData mockData() {
-    return getPojoWithFullData(MockData.class);
-  }
-
   private <T> T getPojoWithFullData(Class<T> classType) {
     return factory.manufacturePojoWithFullData(classType);
   }

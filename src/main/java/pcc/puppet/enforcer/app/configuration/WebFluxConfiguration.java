@@ -16,14 +16,23 @@
 
 package pcc.puppet.enforcer.app.configuration;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.stream.schema.registry.client.ConfluentSchemaRegistryClient;
+import org.springframework.cloud.stream.schema.registry.client.SchemaRegistryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.reactive.config.EnableWebFlux;
 
 @Configuration
-@EnableWebFlux
 public class WebFluxConfiguration {
+
+  @Bean
+  public SchemaRegistryClient schemaRegistryClient(
+      @Value("${spring.cloud.stream.schema-registry-client.endpoint}") String endpoint) {
+    ConfluentSchemaRegistryClient client = new ConfluentSchemaRegistryClient();
+    client.setEndpoint(endpoint);
+    return client;
+  }
 
   @Bean
   HttpStatus defaultHttpStatus() {

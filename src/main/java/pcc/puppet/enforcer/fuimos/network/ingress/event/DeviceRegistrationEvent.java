@@ -16,4 +16,18 @@
 
 package pcc.puppet.enforcer.fuimos.network.ingress.event;
 
-public class DeviceRegistrationEvent {}
+import lombok.Builder;
+import lombok.Data;
+import lombok.extern.jackson.Jacksonized;
+
+@Data
+@Builder
+@Jacksonized
+public class DeviceRegistrationEvent {
+  private String id;
+  private String operatorId;
+  private String operatorName;
+  private String networkId;
+  private String networkName;
+  private String consumerId;
+}

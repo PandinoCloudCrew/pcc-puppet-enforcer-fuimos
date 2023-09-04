@@ -16,18 +16,18 @@
 
 package pcc.puppet.enforcer.app;
 
-import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cloud.stream.schema.registry.client.EnableSchemaRegistryClient;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.vault.support.VaultResponse;
-import reactor.core.publisher.Hooks;
 
+@EnableCaching
 @EnableScheduling
 @EnableConfigurationProperties
+@EnableSchemaRegistryClient
 @SpringBootApplication(scanBasePackages = {"pcc.puppet.*"})
-@RegisterReflectionForBinding({VaultResponse.class})
 public class Application {
   /**
    * Entry point for app
@@ -35,7 +35,6 @@ public class Application {
    * @param args program arguments
    */
   public static void main(final String[] args) {
-    Hooks.enableAutomaticContextPropagation();
     SpringApplication.run(Application.class, args);
   }
 }
